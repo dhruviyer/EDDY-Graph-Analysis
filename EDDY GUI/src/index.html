@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1 id = "message">Hello World</h1>
+		
+		<p>Write some text in this nifty box!</p>
+		
+		<input id = "input" type = "String">
+		
+		<button type="button" onclick="myFunction()">Submit</button>
+		
+		<script>
+			function myFunction(){
+				var x;
+				x = document.getElementById("input").value;
+				document.getElementById("message").innerHTML = x;
+			}
+		</script>
+		
+	</body>
+</html>

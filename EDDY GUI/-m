@@ -1,0 +1,26 @@
+usage: eddy -c <file> -d <file> [-edf <boolean>] -g <file> [-m <SIZE>] [-M
+       <SIZE>] [-mp <SIZE>] [-mt <N>] [-p <double>] [-qp <boolean>] [-r
+       <N>] [-s <N>]
+ -c,--class <file>                    file name for class labels
+ -d,--data <file>                     file name for gene expression data
+ -edf,--edge-dir-fixed <boolean>      Edge direction prefixed -- earlier
+                                      gene -> later gene.
+ -g,--gene-sets <file>                file name for multiple gene sets
+ -m,--min-gene-set <SIZE>             minimum gene set size for analysis.
+                                      [default = -1 for no limit]
+ -M,--max-gene-set <SIZE>             maximum gene set size for anlaysis.
+                                      [default = -1 for no limit]
+ -mp,--max-parents <SIZE>             maximum number of parents for each
+                                      node
+ -mt,--multi-threads <N>              number of threads to use
+ -p,--pvalue-threshold <double>       pvalue threshold for independece
+                                      testing.  [default = 0.05]
+ -qp,--quick-permutations <boolean>   Quick permutations enabled --
+                                      permutation stopswhen there is no
+                                      possibility to yield p-value less
+                                      than given threshold.
+ -r,--number-of-permutations <N>      number of permutations for
+                                      statistical significance testing.
+                                      [default = 1000]
+ -s,--number-of-structures <N>        number of network structures to
+                                      consider.  [default = LOO (-1)]
