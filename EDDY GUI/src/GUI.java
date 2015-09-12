@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.text.NumberFormat;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
@@ -13,6 +14,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 import javax.swing.text.NumberFormatter;
+
+import javafx.scene.layout.Border;
 
 public class GUI {
 
@@ -40,7 +43,7 @@ public class GUI {
 	static SpringLayout sp;
 	
 	static final int VERT_SPACING = 25; //vertical spacing for layout
-	static final int HORIZ_SPACINGC2 = 200; //horizonatal spacing for layout
+	static final int HORIZ_SPACINGC2 = 250; //horizonatal spacing for layout
 	static final int HORIZ_SPACINGC1 = 15;
 	
 	public static void main(String[] args) {
@@ -91,6 +94,7 @@ public class GUI {
 		output.setFont(new Font("Serif", Font.TYPE1_FONT, 14));
 		output.setEditable(false);
 		output.setPreferredSize(new Dimension(300,500));
+		output.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE, 1),BorderFactory.createEmptyBorder(5,5,5,5)));
 		
 		minGeneSetSize.setPreferredSize(new Dimension(100,25));
 		maxGeneSetSize.setPreferredSize(new Dimension(100,25));
@@ -208,7 +212,7 @@ public class GUI {
 			sp.putConstraint(SpringLayout.NORTH, edf, 15, SpringLayout.SOUTH, classInfoFileSelector);
 			
 			sp.putConstraint(SpringLayout.WEST, minGeneSetSize, HORIZ_SPACINGC2, SpringLayout.WEST, settingsPanel);
-			sp.putConstraint(SpringLayout.NORTH, minGeneSetSize, 35, SpringLayout.SOUTH, edf);
+			sp.putConstraint(SpringLayout.NORTH, minGeneSetSize, 25, SpringLayout.SOUTH, edf);
 			
 			sp.putConstraint(SpringLayout.WEST, maxGeneSetSize, HORIZ_SPACINGC2, SpringLayout.WEST, settingsPanel);
 			sp.putConstraint(SpringLayout.NORTH, maxGeneSetSize, 15, SpringLayout.SOUTH, minGeneSetSize);
@@ -228,7 +232,7 @@ public class GUI {
 			sp.putConstraint(SpringLayout.WEST, numPerms, HORIZ_SPACINGC2, SpringLayout.WEST, settingsPanel);
 			sp.putConstraint(SpringLayout.NORTH, numPerms, 15, SpringLayout.SOUTH, numNetStruc);
 	
-			sp.putConstraint(SpringLayout.WEST, output, 400, SpringLayout.WEST, settingsPanel);
+			sp.putConstraint(SpringLayout.WEST, output, 500, SpringLayout.WEST, settingsPanel);
 			sp.putConstraint(SpringLayout.NORTH, output, 15, SpringLayout.NORTH, settingsPanel);
 			
 			
@@ -241,7 +245,7 @@ public class GUI {
 	}
 
 	public static void show() {
-		frame.setSize(750, 600);
+		frame.setSize(850, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
