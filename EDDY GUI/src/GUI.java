@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
 import javafx.application.Platform;
@@ -74,6 +76,10 @@ public class GUI {
 	static final int HORIZ_SPACINGC3 = 500; //horizontal spacing for column 3 of layout
 	static final int HORIZ_SPACINGC4 = 735; //horizontal spacing for column 3 of layout
 	
+	static int settingsFrameHeight = 600;
+	static int settingsFrameWidth = 545;
+	
+	
 	public static void main(String[] args) {
 		init(); // initialize elements
 		add(); // add elements to panels and frames
@@ -86,8 +92,11 @@ public class GUI {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (showAdvancedOptions.isSelected()){
-					frame.setSize(550,600);
+				if (!showAdvancedOptions.isSelected()){
+					settingsFrameHeight = 600;
+					settingsFrameWidth = 550;
+					frame.setSize(settingsFrameWidth,settingsFrameHeight);
+					
 					edf.setVisible(false);
 					minGeneSetSize.setVisible(false);
 					maxGeneSetSize.setVisible(false);
@@ -96,8 +105,21 @@ public class GUI {
 					quickPermEnabled.setVisible(false);
 					numNetStruc.setVisible(false);
 					numPerms.setVisible(false);
+					
+					lbl4.setVisible(false);
+					lbl5.setVisible(false);
+					lbl6.setVisible(false);
+					lbl7.setVisible(false);
+					lbl8.setVisible(false);
+					lbl9.setVisible(false);
+					lbl10.setVisible(false);
+					lbl11.setVisible(false);
+					
 				}else{
-					frame.setSize(975, 600);
+					settingsFrameHeight = 600;
+					settingsFrameWidth = 975;
+					frame.setSize(settingsFrameWidth,settingsFrameHeight);
+					
 					edf.setVisible(true);
 					minGeneSetSize.setVisible(true);
 					maxGeneSetSize.setVisible(true);
@@ -106,11 +128,33 @@ public class GUI {
 					quickPermEnabled.setVisible(true);
 					numNetStruc.setVisible(true);
 					numPerms.setVisible(true);
+					
+					lbl4.setVisible(true);
+					lbl5.setVisible(true);
+					lbl6.setVisible(true);
+					lbl7.setVisible(true);
+					lbl8.setVisible(true);
+					lbl9.setVisible(true);
+					lbl10.setVisible(true);
+					lbl11.setVisible(true);
+					
 				}
 				
 			}
 		});
 		
+		tabbedPane.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				if (tabbedPane.getSelectedIndex() == 1){
+					frame.setSize(820, 670);
+				}else{
+					frame.setSize(settingsFrameWidth, settingsFrameHeight);
+				}
+					
+			}
+		});
 	}
 
 	public static void init() {
@@ -356,9 +400,29 @@ public class GUI {
     }
     
 	public static void show() {
-		frame.setSize(975, 600);
+		frame.setSize(settingsFrameWidth, settingsFrameHeight);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//hide advanced parameters by default
+		edf.setVisible(false);
+		minGeneSetSize.setVisible(false);
+		maxGeneSetSize.setVisible(false);
+		numThreads.setVisible(false);
+		pVal.setVisible(false);
+		quickPermEnabled.setVisible(false);
+		numNetStruc.setVisible(false);
+		numPerms.setVisible(false);
+		
+		lbl4.setVisible(false);
+		lbl5.setVisible(false);
+		lbl6.setVisible(false);
+		lbl7.setVisible(false);
+		lbl8.setVisible(false);
+		lbl9.setVisible(false);
+		lbl10.setVisible(false);
+		lbl11.setVisible(false);
+		
 		frame.setVisible(true);
 
 	}
