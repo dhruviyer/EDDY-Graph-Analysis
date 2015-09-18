@@ -118,6 +118,8 @@ public class GUI {
 					resamplingRate.setVisible(false);
 					priorDirectionality.setVisible(false);
 					includeNeighbor.setVisible(false);
+					approximatePermuations.setVisible(false);
+					priorWeight.setVisible(false);
 					
 					lbl4.setVisible(false);
 					lbl5.setVisible(false);
@@ -130,6 +132,8 @@ public class GUI {
 					lbl12.setVisible(false);
 					lbl13.setVisible(false);
 					lbl14.setVisible(false);
+					lbl15.setVisible(false);
+					lbl16.setVisible(false);
 					
 				}else{
 					settingsFrameHeight = 800;
@@ -147,6 +151,8 @@ public class GUI {
 					resamplingRate.setVisible(true);
 					priorDirectionality.setVisible(true);
 					includeNeighbor.setVisible(true);
+					approximatePermuations.setVisible(true);
+					priorWeight.setVisible(true);
 					
 					lbl4.setVisible(true);
 					lbl5.setVisible(true);
@@ -159,7 +165,8 @@ public class GUI {
 					lbl12.setVisible(true);
 					lbl13.setVisible(true);
 					lbl14.setVisible(true);
-					
+					lbl16.setVisible(true);
+					lbl15.setVisible(true);
 				}
 				
 			}
@@ -170,7 +177,7 @@ public class GUI {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				if (tabbedPane.getSelectedIndex() == 1){
-					frame.setSize(820, 670);
+					frame.setSize(1025, 800);
 				}else{
 					frame.setSize(settingsFrameWidth, settingsFrameHeight);
 				}
@@ -398,7 +405,15 @@ public class GUI {
 			//lbl14
 				sp.putConstraint(SpringLayout.WEST, lbl14, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, lbl14, VERT_SPACING+10, SpringLayout.SOUTH, lbl13);
-		
+			
+			//lbl15
+				sp.putConstraint(SpringLayout.WEST, lbl15, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, lbl15, VERT_SPACING+10, SpringLayout.SOUTH, lbl14);
+			
+			//lbl16
+				sp.putConstraint(SpringLayout.WEST, lbl16, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, lbl16, VERT_SPACING+10, SpringLayout.SOUTH, lbl15);
+				
 		//Column 4
 				sp.putConstraint(SpringLayout.WEST, edf, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, edf, 30, SpringLayout.NORTH, settingsPanel);
@@ -433,6 +448,12 @@ public class GUI {
 		
 				sp.putConstraint(SpringLayout.WEST, includeNeighbor, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, includeNeighbor, 10, SpringLayout.SOUTH, priorDirectionality);
+				
+				sp.putConstraint(SpringLayout.WEST, approximatePermuations, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, approximatePermuations, 20, SpringLayout.SOUTH, includeNeighbor);
+				
+				sp.putConstraint(SpringLayout.WEST, priorWeight, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, priorWeight, 30, SpringLayout.SOUTH, approximatePermuations);
 				
 			//output box
 				sp.putConstraint(SpringLayout.WEST, output, HORIZ_SPACINGC1 -5 , SpringLayout.WEST, settingsPanel);
