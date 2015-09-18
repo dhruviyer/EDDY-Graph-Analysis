@@ -47,6 +47,11 @@ public class GUI {
 	static JButton runEDDY;
 	static JTextArea output;
 	static JCheckBox showAdvancedOptions;
+	static JFormattedTextField resamplingRate;
+	static JCheckBox priorDirectionality;
+	static JCheckBox includeNeighbor;
+	static JCheckBox approximatePermuations;
+	static JFormattedTextField priorWeight;
 	
 	// various labels
 	static JLabel lbl0;
@@ -61,6 +66,11 @@ public class GUI {
 	static JLabel lbl9;
 	static JLabel lbl10;
 	static JLabel lbl11;
+	static JLabel lbl12;
+	static JLabel lbl13;
+	static JLabel lbl14;
+	static JLabel lbl15;
+	static JLabel lbl16;
 	
 	static JTabbedPane tabbedPane;
 	static JPanel settingsPanel;
@@ -73,10 +83,10 @@ public class GUI {
 	static final int VERT_SPACING = 25; //vertical spacing for layout
 	static final int HORIZ_SPACINGC1 = 15; //horizontal spacing for column 1 of layout
 	static final int HORIZ_SPACINGC2 = 250; //horizontal spacing for column 2 in layout
-	static final int HORIZ_SPACINGC3 = 500; //horizontal spacing for column 3 of layout
-	static final int HORIZ_SPACINGC4 = 735; //horizontal spacing for column 3 of layout
+	static final int HORIZ_SPACINGC3 = 530; //horizontal spacing for column 3 of layout
+	static final int HORIZ_SPACINGC4 = 765; //horizontal spacing for column 3 of layout
 	
-	static int settingsFrameHeight = 600;
+	static int settingsFrameHeight = 800;
 	static int settingsFrameWidth = 545;
 	
 	
@@ -93,7 +103,7 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!showAdvancedOptions.isSelected()){
-					settingsFrameHeight = 600;
+					settingsFrameHeight = 800;
 					settingsFrameWidth = 550;
 					frame.setSize(settingsFrameWidth,settingsFrameHeight);
 					
@@ -105,6 +115,9 @@ public class GUI {
 					quickPermEnabled.setVisible(false);
 					numNetStruc.setVisible(false);
 					numPerms.setVisible(false);
+					resamplingRate.setVisible(false);
+					priorDirectionality.setVisible(false);
+					includeNeighbor.setVisible(false);
 					
 					lbl4.setVisible(false);
 					lbl5.setVisible(false);
@@ -114,10 +127,13 @@ public class GUI {
 					lbl9.setVisible(false);
 					lbl10.setVisible(false);
 					lbl11.setVisible(false);
+					lbl12.setVisible(false);
+					lbl13.setVisible(false);
+					lbl14.setVisible(false);
 					
 				}else{
-					settingsFrameHeight = 600;
-					settingsFrameWidth = 975;
+					settingsFrameHeight = 800;
+					settingsFrameWidth = 1025;
 					frame.setSize(settingsFrameWidth,settingsFrameHeight);
 					
 					edf.setVisible(true);
@@ -128,6 +144,9 @@ public class GUI {
 					quickPermEnabled.setVisible(true);
 					numNetStruc.setVisible(true);
 					numPerms.setVisible(true);
+					resamplingRate.setVisible(true);
+					priorDirectionality.setVisible(true);
+					includeNeighbor.setVisible(true);
 					
 					lbl4.setVisible(true);
 					lbl5.setVisible(true);
@@ -137,6 +156,9 @@ public class GUI {
 					lbl9.setVisible(true);
 					lbl10.setVisible(true);
 					lbl11.setVisible(true);
+					lbl12.setVisible(true);
+					lbl13.setVisible(true);
+					lbl14.setVisible(true);
 					
 				}
 				
@@ -194,13 +216,18 @@ public class GUI {
 		runEDDY = new JButton("Run EDDY");
 		output = new JTextArea("CONSOLE OUTPUT:\n\nWelcome to EDDY \nPlease input arguments and click \"run EDDY\"\n");
 		showAdvancedOptions = new JCheckBox("Show advanced options", false);
-	
+		resamplingRate = new JFormattedTextField(formatter);
+		priorDirectionality = new JCheckBox("<html>Use directionality of <br>prior edges?</html>");
+		includeNeighbor = new JCheckBox("<html>Include neighbor-of <br>interactions from prior?</html>");
+		approximatePermuations = new JCheckBox("Approximate Permuations?");
+		priorWeight = new JFormattedTextField(formatter);
+		
 		//cuatomize console window
 		output.setBackground(Color.BLACK);
 		output.setForeground(Color.WHITE);
 		output.setFont(new Font("Serif", Font.TYPE1_FONT, 14));
 		output.setEditable(false);
-		output.setPreferredSize(new Dimension(500,150));
+		output.setPreferredSize(new Dimension(500,350));
 		output.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE, 1),BorderFactory.createEmptyBorder(5,5,5,5)));
 		
 		//set preferred dimension size
@@ -210,6 +237,8 @@ public class GUI {
 		pVal.setPreferredSize(new Dimension(100,25));
 		numNetStruc.setPreferredSize(new Dimension(100,25));
 		numPerms.setPreferredSize(new Dimension(100,25));
+		resamplingRate.setPreferredSize(new Dimension(100, 25));
+		priorWeight.setPreferredSize(new Dimension(100, 25));
 		
 		//initialize labels
 		
@@ -225,7 +254,12 @@ public class GUI {
 		lbl9 = new JLabel("Quick permutations enabled");
 		lbl10 = new JLabel("Number of network structures");
 		lbl11 = new JLabel("Number of permutations");
-
+		lbl12 = new JLabel("Resampling Rate");
+		lbl13 = new JLabel("Use prior directionality");
+		lbl14 = new JLabel("Include Neighbor");
+		lbl15 = new JLabel("Approximate Permutations");
+		lbl16 = new JLabel("Prior weight");
+		
 		//Java FX, create the cytoscape panel with the given html
 		Platform.runLater(new Runnable() {
             @Override
@@ -266,6 +300,16 @@ public class GUI {
 		settingsPanel.add(numNetStruc);
 		settingsPanel.add(lbl11);
 		settingsPanel.add(numPerms);
+		settingsPanel.add(lbl12);
+		settingsPanel.add(resamplingRate);
+		settingsPanel.add(lbl13);
+		settingsPanel.add(priorDirectionality);
+		settingsPanel.add(lbl14);
+		settingsPanel.add(includeNeighbor);
+		settingsPanel.add(lbl15);
+		settingsPanel.add(approximatePermuations);
+		settingsPanel.add(lbl16);
+		settingsPanel.add(priorWeight);
 		settingsPanel.add(runEDDY);
 		settingsPanel.add(output);
 		
@@ -339,13 +383,25 @@ public class GUI {
 				sp.putConstraint(SpringLayout.WEST, lbl10, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, lbl10, VERT_SPACING, SpringLayout.SOUTH, lbl9);
 				
-			//lbl12
+			//lbl11
 				sp.putConstraint(SpringLayout.WEST, lbl11, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, lbl11, VERT_SPACING, SpringLayout.SOUTH, lbl10);
+			
+			//lbl12
+				sp.putConstraint(SpringLayout.WEST, lbl12, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, lbl12, VERT_SPACING, SpringLayout.SOUTH, lbl11);
+				
+			//lbl13
+				sp.putConstraint(SpringLayout.WEST, lbl13, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, lbl13, VERT_SPACING, SpringLayout.SOUTH, lbl12);
+				
+			//lbl14
+				sp.putConstraint(SpringLayout.WEST, lbl14, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, lbl14, VERT_SPACING+10, SpringLayout.SOUTH, lbl13);
 		
 		//Column 4
 				sp.putConstraint(SpringLayout.WEST, edf, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, edf, 15, SpringLayout.NORTH, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, edf, 30, SpringLayout.NORTH, settingsPanel);
 				
 				sp.putConstraint(SpringLayout.WEST, minGeneSetSize, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, minGeneSetSize, 25, SpringLayout.SOUTH, edf);
@@ -367,7 +423,18 @@ public class GUI {
 				
 				sp.putConstraint(SpringLayout.WEST, numPerms, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, numPerms, 15, SpringLayout.SOUTH, numNetStruc);
+				
+
+				sp.putConstraint(SpringLayout.WEST, resamplingRate, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, resamplingRate, 15, SpringLayout.SOUTH, numPerms);
+			
+				sp.putConstraint(SpringLayout.WEST, priorDirectionality, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, priorDirectionality, 15, SpringLayout.SOUTH, resamplingRate);
 		
+				sp.putConstraint(SpringLayout.WEST, includeNeighbor, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, includeNeighbor, 10, SpringLayout.SOUTH, priorDirectionality);
+				
+			//output box
 				sp.putConstraint(SpringLayout.WEST, output, HORIZ_SPACINGC1 -5 , SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, output, 375, SpringLayout.NORTH, settingsPanel);
 			
