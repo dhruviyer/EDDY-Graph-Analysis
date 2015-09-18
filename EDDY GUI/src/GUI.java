@@ -1,6 +1,4 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -26,9 +24,9 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 
 public class GUI {
 
@@ -52,6 +50,7 @@ public class GUI {
 	static JCheckBox includeNeighbor;
 	static JCheckBox approximatePermuations;
 	static JFormattedTextField priorWeight;
+	static JButton resetFields;
 	
 	// various labels
 	static JLabel lbl0;
@@ -94,7 +93,22 @@ public class GUI {
 		init(); // initialize elements
 		add(); // add elements to panels and frames
 		setListeners(); //add listeners
+		setDefaults(); //set any and all default values
 		show(); // display
+	}
+
+	private static void setDefaults() {
+		minGeneSetSize.setText("-1");
+		maxGeneSetSize.setText("-1");
+		pVal.setText("0.05");
+		numNetStruc.setText("-1");
+		numPerms.setText("1000");
+		resamplingRate.setText("0.8");
+		priorDirectionality.setSelected(false);
+		includeNeighbor.setSelected(false);
+		approximatePermuations.setSelected(true);
+		priorWeight.setText("0.0");
+		edf.setSelected(true);
 	}
 
 	private static void setListeners() {
@@ -184,6 +198,15 @@ public class GUI {
 					
 			}
 		});
+		
+		resetFields.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setDefaults();
+				
+			}
+		});
 	}
 
 	public static void init() {
@@ -228,6 +251,7 @@ public class GUI {
 		includeNeighbor = new JCheckBox("<html>Include neighbor-of <br>interactions from prior?</html>");
 		approximatePermuations = new JCheckBox("Approximate Permuations?");
 		priorWeight = new JFormattedTextField(formatter);
+		resetFields = new JButton("Reset");
 		
 		//cuatomize console window
 		output.setBackground(Color.BLACK);
@@ -319,6 +343,7 @@ public class GUI {
 		settingsPanel.add(priorWeight);
 		settingsPanel.add(runEDDY);
 		settingsPanel.add(output);
+		settingsPanel.add(resetFields);
 		
 		// constraints to lay out everything
 
@@ -414,6 +439,10 @@ public class GUI {
 				sp.putConstraint(SpringLayout.WEST, lbl16, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, lbl16, VERT_SPACING+10, SpringLayout.SOUTH, lbl15);
 				
+			//reset button
+				sp.putConstraint(SpringLayout.WEST, resetFields, HORIZ_SPACINGC3-10, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, resetFields, VERT_SPACING+10, SpringLayout.SOUTH, lbl16);
+				
 		//Column 4
 				sp.putConstraint(SpringLayout.WEST, edf, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, edf, 30, SpringLayout.NORTH, settingsPanel);
@@ -471,6 +500,7 @@ public class GUI {
         // This method is invoked on the JavaFX thread, create the scene to hold all of the elements
     	Scene scene = createScene();
         fxPanel.setScene(scene);
+       
     }
 
     private static Scene createScene() {
