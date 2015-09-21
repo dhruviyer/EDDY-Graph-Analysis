@@ -52,6 +52,7 @@ public class GUI {
 	static JRadioButton approximatePermuations;
 	static JFormattedTextField priorWeight;
 	static JButton resetFields;
+	static JFormattedTextField maxNumParents;
 	
 	// various labels
 	static JLabel lbl0;
@@ -71,6 +72,7 @@ public class GUI {
 	static JLabel lbl14;
 	static JLabel lbl15;
 	static JLabel lbl16;
+	static JLabel lbl17;
 	
 	static JTabbedPane tabbedPane;
 	static JPanel settingsPanel;
@@ -209,6 +211,7 @@ public class GUI {
 				
 			}
 		});
+	
 	}
 
 	public static void init() {
@@ -254,6 +257,7 @@ public class GUI {
 		approximatePermuations = new JRadioButton("Approximate Permuations?");
 		priorWeight = new JFormattedTextField(formatter);
 		resetFields = new JButton("Reset");
+		maxNumParents = new JFormattedTextField(formatter);
 		
 		//cuatomize console window
 		output.setBackground(Color.BLACK);
@@ -272,6 +276,7 @@ public class GUI {
 		numPerms.setPreferredSize(new Dimension(100,25));
 		resamplingRate.setPreferredSize(new Dimension(100, 25));
 		priorWeight.setPreferredSize(new Dimension(100, 25));
+		maxNumParents.setPreferredSize(new Dimension(100, 25));
 		
 		//initialize labels
 		lbl0 = new JLabel("Show advanced options?");
@@ -291,11 +296,21 @@ public class GUI {
 		lbl14 = new JLabel("Include Neighbor");
 		lbl15 = new JLabel("Approximate Permutations");
 		lbl16 = new JLabel("Prior weight");
+		lbl17 = new JLabel("Max parent nodes");
 		
 		//QP and AP are in a single button group
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(quickPermEnabled);
 		bg.add(approximatePermuations);
+		
+		//set description tooltips
+		inputDataFileSelector.setToolTipText("Input data file");
+		geneSetFileSelector.setToolTipText("Gene set list file");
+		classInfoFileSelector.setToolTipText("Glass information file");
+		edf.setToolTipText("Edge-direction fixed boolean parameter");
+		minGeneSetSize.setToolTipText("Minimum gene set size for analysis. Default = -1 for no limit.");
+		maxGeneSetSize.setToolTipText("Maximum gene set size for analysis. Default = -1 for no limit.");
+		
 		
 		//Java FX, create the cytoscape panel with the given html
 		Platform.runLater(new Runnable() {
@@ -349,6 +364,8 @@ public class GUI {
 		settingsPanel.add(priorWeight);
 		settingsPanel.add(runEDDY);
 		settingsPanel.add(output);
+		settingsPanel.add(lbl17);
+		settingsPanel.add(maxNumParents);
 		settingsPanel.add(resetFields);
 		
 		// constraints to lay out everything
@@ -444,10 +461,14 @@ public class GUI {
 			//lbl16
 				sp.putConstraint(SpringLayout.WEST, lbl16, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, lbl16, VERT_SPACING+10, SpringLayout.SOUTH, lbl15);
+			
+			//lbl17
+				sp.putConstraint(SpringLayout.WEST, lbl17, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, lbl17, VERT_SPACING+10, SpringLayout.SOUTH, lbl16);
 				
 			//reset button
 				sp.putConstraint(SpringLayout.WEST, resetFields, HORIZ_SPACINGC3-10, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, resetFields, VERT_SPACING+10, SpringLayout.SOUTH, lbl16);
+				sp.putConstraint(SpringLayout.NORTH, resetFields, VERT_SPACING+10, SpringLayout.SOUTH, lbl17);
 				
 		//Column 4
 				sp.putConstraint(SpringLayout.WEST, edf, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
