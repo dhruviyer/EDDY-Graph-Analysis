@@ -310,7 +310,17 @@ public class GUI {
 		edf.setToolTipText("Edge-direction fixed boolean parameter");
 		minGeneSetSize.setToolTipText("Minimum gene set size for analysis. Default = -1 for no limit.");
 		maxGeneSetSize.setToolTipText("Maximum gene set size for analysis. Default = -1 for no limit.");
-		
+		numThreads.setToolTipText("Number of threads to use");
+		maxNumParents.setToolTipText("Maximum number of parents for each node");
+		pVal.setToolTipText("pvalue threshold for independence testing. [default = 0.05]");
+		quickPermEnabled.setToolTipText("<html>Quick permutations enabled -- permutation stops <br>when there is no possibility to yield p-value less than given threshold.</html>");
+		numNetStruc.setToolTipText("Number network structures to consider [default = LOO (-1)]");
+		numPerms.setToolTipText("Number of permutations for statistical significance testing. [default = 1000]");
+		resamplingRate.setToolTipText("Resampling rate. [default = 0.8 when number of network structures is specified]");
+		priorDirectionality.setToolTipText(" Use directionality of prior edges. [default = false]");
+		includeNeighbor.setToolTipText("Include neighbor-of interactions from prior.  [default false]");
+		approximatePermuations.setToolTipText("Approximate permutations with beta distribution.  [default true]");
+		priorWeight.setToolTipText("Weight to give prior. [default = 0.0]");
 		
 		//Java FX, create the cytoscape panel with the given html
 		Platform.runLater(new Runnable() {
@@ -510,6 +520,9 @@ public class GUI {
 				
 				sp.putConstraint(SpringLayout.WEST, priorWeight, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, priorWeight, 30, SpringLayout.SOUTH, approximatePermuations);
+				
+				sp.putConstraint(SpringLayout.WEST, maxNumParents, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, maxNumParents, 30, SpringLayout.SOUTH, priorWeight);
 				
 			//output box
 				sp.putConstraint(SpringLayout.WEST, output, HORIZ_SPACINGC1 -5 , SpringLayout.WEST, settingsPanel);
