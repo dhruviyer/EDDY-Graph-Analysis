@@ -7,12 +7,14 @@ import java.net.URL;
 import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
@@ -26,7 +28,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 
 public class GUI {
 
@@ -39,7 +40,7 @@ public class GUI {
 	static JFormattedTextField maxGeneSetSize;
 	static JFormattedTextField numThreads;
 	static JFormattedTextField pVal;
-	static JCheckBox quickPermEnabled;
+	static JRadioButton quickPermEnabled;
 	static JFormattedTextField numNetStruc;
 	static JFormattedTextField numPerms;
 	static JButton runEDDY;
@@ -48,7 +49,7 @@ public class GUI {
 	static JFormattedTextField resamplingRate;
 	static JCheckBox priorDirectionality;
 	static JCheckBox includeNeighbor;
-	static JCheckBox approximatePermuations;
+	static JRadioButton approximatePermuations;
 	static JFormattedTextField priorWeight;
 	static JButton resetFields;
 	
@@ -109,6 +110,7 @@ public class GUI {
 		approximatePermuations.setSelected(true);
 		priorWeight.setText("0.0");
 		edf.setSelected(true);
+		quickPermEnabled.setSelected(false);
 	}
 
 	private static void setListeners() {
@@ -240,7 +242,7 @@ public class GUI {
 		maxGeneSetSize = new JFormattedTextField(formatter);
 		numThreads = new JFormattedTextField(formatter);
 		pVal = new JFormattedTextField(formatter);
-		quickPermEnabled = new JCheckBox("Quick permutations enabled?");
+		quickPermEnabled = new JRadioButton("Quick permutations enabled?");
 		numNetStruc = new JFormattedTextField(formatter);
 		numPerms = new JFormattedTextField(formatter);
 		runEDDY = new JButton("Run EDDY");
@@ -249,7 +251,7 @@ public class GUI {
 		resamplingRate = new JFormattedTextField(formatter);
 		priorDirectionality = new JCheckBox("<html>Use directionality of <br>prior edges?</html>");
 		includeNeighbor = new JCheckBox("<html>Include neighbor-of <br>interactions from prior?</html>");
-		approximatePermuations = new JCheckBox("Approximate Permuations?");
+		approximatePermuations = new JRadioButton("Approximate Permuations?");
 		priorWeight = new JFormattedTextField(formatter);
 		resetFields = new JButton("Reset");
 		
@@ -272,7 +274,6 @@ public class GUI {
 		priorWeight.setPreferredSize(new Dimension(100, 25));
 		
 		//initialize labels
-		
 		lbl0 = new JLabel("Show advanced options?");
 		lbl1 = new JLabel("Select Input File");
 		lbl2 = new JLabel("Select Gene Set file");
@@ -290,6 +291,11 @@ public class GUI {
 		lbl14 = new JLabel("Include Neighbor");
 		lbl15 = new JLabel("Approximate Permutations");
 		lbl16 = new JLabel("Prior weight");
+		
+		//QP and AP are in a single button group
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(quickPermEnabled);
+		bg.add(approximatePermuations);
 		
 		//Java FX, create the cytoscape panel with the given html
 		Platform.runLater(new Runnable() {
