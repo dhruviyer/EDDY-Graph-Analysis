@@ -138,6 +138,8 @@ public class GUI {
 					includeNeighbor.setVisible(false);
 					approximatePermuations.setVisible(false);
 					priorWeight.setVisible(false);
+					maxNumParents.setVisible(false);
+					resetFields.setVisible(false);
 					
 					lbl4.setVisible(false);
 					lbl5.setVisible(false);
@@ -171,6 +173,8 @@ public class GUI {
 					includeNeighbor.setVisible(true);
 					approximatePermuations.setVisible(true);
 					priorWeight.setVisible(true);
+					maxNumParents.setVisible(true);
+					resetFields.setVisible(true);
 					
 					lbl4.setVisible(true);
 					lbl5.setVisible(true);
@@ -185,6 +189,7 @@ public class GUI {
 					lbl14.setVisible(true);
 					lbl16.setVisible(true);
 					lbl15.setVisible(true);
+					lbl16.setVisible(true);
 				}
 				
 			}
@@ -559,7 +564,7 @@ public class GUI {
     
 	public static void show() {
 		frame.setSize(settingsFrameWidth, settingsFrameHeight);
-		frame.setResizable(false);
+		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//hide advanced parameters by default
@@ -580,6 +585,7 @@ public class GUI {
 		lbl9.setVisible(false);
 		lbl10.setVisible(false);
 		lbl11.setVisible(false);
+		resetFields.setVisible(false);
 		
 		frame.setVisible(true);
 
