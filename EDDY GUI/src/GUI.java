@@ -15,6 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
@@ -77,7 +79,7 @@ public class GUI {
 	static JTabbedPane tabbedPane;
 	static JPanel settingsPanel;
 	static JFXPanel cytoscapePanel;
-
+	static JScrollPane scrollPane;
 	static JFrame frame;
 
 	static SpringLayout sp;
@@ -88,8 +90,8 @@ public class GUI {
 	static final int HORIZ_SPACINGC3 = 530; //horizontal spacing for column 3 of layout
 	static final int HORIZ_SPACINGC4 = 765; //horizontal spacing for column 3 of layout
 	
-	static int settingsFrameHeight = 800;
-	static int settingsFrameWidth = 545;
+	static int settingsFrameHeight = 600;
+	static int settingsFrameWidth = 570;
 	
 	
 	public static void main(String[] args) {
@@ -121,8 +123,8 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!showAdvancedOptions.isSelected()){
-					settingsFrameHeight = 800;
-					settingsFrameWidth = 550;
+					settingsFrameHeight = 600;
+					settingsFrameWidth = 570;
 					frame.setSize(settingsFrameWidth,settingsFrameHeight);
 					
 					edf.setVisible(false);
@@ -154,9 +156,10 @@ public class GUI {
 					lbl14.setVisible(false);
 					lbl15.setVisible(false);
 					lbl16.setVisible(false);
+					lbl17.setVisible(false);
 					
 				}else{
-					settingsFrameHeight = 800;
+					settingsFrameHeight = 600;
 					settingsFrameWidth = 1025;
 					frame.setSize(settingsFrameWidth,settingsFrameHeight);
 					
@@ -190,6 +193,7 @@ public class GUI {
 					lbl16.setVisible(true);
 					lbl15.setVisible(true);
 					lbl16.setVisible(true);
+					lbl17.setVisible(true);
 				}
 				
 			}
@@ -200,7 +204,7 @@ public class GUI {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				if (tabbedPane.getSelectedIndex() == 1){
-					frame.setSize(1025, 800);
+					frame.setSize(850, 675);
 				}else{
 					frame.setSize(settingsFrameWidth, settingsFrameHeight);
 				}
@@ -230,7 +234,10 @@ public class GUI {
 		tabbedPane = new JTabbedPane();
 		settingsPanel = new JPanel();
 		cytoscapePanel = new JFXPanel();
-
+		scrollPane = new JScrollPane(settingsPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        settingsPanel.setPreferredSize(new Dimension(1000, 700));
 		// set settingsPanel layout to sp (defined earlier)
 		settingsPanel.setLayout(sp);
 
@@ -534,7 +541,8 @@ public class GUI {
 				sp.putConstraint(SpringLayout.NORTH, output, 375, SpringLayout.NORTH, settingsPanel);
 			
 			// add to tabbed pane
-		tabbedPane.add("Configure", settingsPanel);
+		//tabbedPane.add("Configure", settingsPanel);
+		tabbedPane.add("Configure", scrollPane);
 		tabbedPane.add("Result", cytoscapePanel);
 
 		// add to main frame
@@ -576,6 +584,14 @@ public class GUI {
 		quickPermEnabled.setVisible(false);
 		numNetStruc.setVisible(false);
 		numPerms.setVisible(false);
+		resamplingRate.setVisible(false);
+		priorDirectionality.setVisible(false);
+		includeNeighbor.setVisible(false);
+		approximatePermuations.setVisible(false);
+		priorWeight.setVisible(false);
+		maxNumParents.setVisible(false);
+		resetFields.setVisible(false);
+		
 		
 		lbl4.setVisible(false);
 		lbl5.setVisible(false);
@@ -585,6 +601,12 @@ public class GUI {
 		lbl9.setVisible(false);
 		lbl10.setVisible(false);
 		lbl11.setVisible(false);
+		lbl12.setVisible(false);
+		lbl13.setVisible(false);
+		lbl14.setVisible(false);
+		lbl15.setVisible(false);
+		lbl16.setVisible(false);
+		lbl17.setVisible(false);
 		resetFields.setVisible(false);
 		
 		frame.setVisible(true);
