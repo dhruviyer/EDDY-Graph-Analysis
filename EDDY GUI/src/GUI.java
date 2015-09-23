@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URL;
 import java.text.NumberFormat;
 
@@ -10,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -75,6 +77,7 @@ public class GUI {
 	static JLabel lbl16;
 	static JLabel lbl17;
 	
+	//various panes and containers
 	static JTabbedPane tabbedPane;
 	static JPanel settingsPanel;
 	static JFXPanel cytoscapePanel;
@@ -83,15 +86,23 @@ public class GUI {
 
 	static SpringLayout sp;
 	
+	//layout constants
 	static final int VERT_SPACING = 15; //vertical spacing for layout
 	static final int HORIZ_SPACINGC1 = 15; //horizontal spacing for column 1 of layout
-	static final int HORIZ_SPACINGC2 = 250; //horizontal spacing for column 2 in layout
+	static final int HORIZ_SPACINGC2 = 200; //horizontal spacing for column 2 in layout
 	static final int HORIZ_SPACINGC3 = 530; //horizontal spacing for column 3 of layout
 	static final int HORIZ_SPACINGC4 = 765; //horizontal spacing for column 3 of layout
 	
 	static int settingsFrameHeight = 550;
 	static int settingsFrameWidth = 570;
 	
+	//files
+	static String inputFile;
+	static String geneSetFile;
+	static String classInfoFile;
+	
+	//file selector
+	static JFileChooser fc;
 	
 	public static void main(String[] args) {
 		init(); // initialize elements
@@ -220,6 +231,47 @@ public class GUI {
 			}
 		});
 	
+		inputDataFileSelector.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int returnVal = fc.showOpenDialog(settingsPanel);
+				
+				if(returnVal == JFileChooser.APPROVE_OPTION){
+					inputFile = fc.getSelectedFile().getPath();
+					inputDataFileSelector.setText(fc.getSelectedFile().getName());
+				}
+				
+			}
+		});
+		
+		geneSetFileSelector.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int returnVal = fc.showOpenDialog(settingsPanel);
+						
+						if(returnVal == JFileChooser.APPROVE_OPTION){
+							geneSetFile = fc.getSelectedFile().getPath();
+							geneSetFileSelector.setText(fc.getSelectedFile().getName());
+						}
+						
+					}
+				});
+		
+		classInfoFileSelector.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int returnVal = fc.showOpenDialog(settingsPanel);
+				
+				if(returnVal == JFileChooser.APPROVE_OPTION){
+					classInfoFile = fc.getSelectedFile().getPath();
+					classInfoFileSelector.setText(fc.getSelectedFile().getName());
+				}
+				
+			}
+		});
 	}
 
 	public static void init() {
@@ -333,6 +385,9 @@ public class GUI {
 		approximatePermuations.setToolTipText("Approximate permutations with beta distribution.  [default true]");
 		priorWeight.setToolTipText("Weight to give prior. [default = 0.0]");
 		
+		//initialize file selector
+		fc = new JFileChooser();
+			
 		//Java FX, create the cytoscape panel with the given html
 		Platform.runLater(new Runnable() {
             @Override
