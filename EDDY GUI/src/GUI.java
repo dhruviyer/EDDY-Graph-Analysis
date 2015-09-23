@@ -84,13 +84,13 @@ public class GUI {
 
 	static SpringLayout sp;
 	
-	static final int VERT_SPACING = 25; //vertical spacing for layout
+	static final int VERT_SPACING = 15; //vertical spacing for layout
 	static final int HORIZ_SPACINGC1 = 15; //horizontal spacing for column 1 of layout
 	static final int HORIZ_SPACINGC2 = 250; //horizontal spacing for column 2 in layout
 	static final int HORIZ_SPACINGC3 = 530; //horizontal spacing for column 3 of layout
 	static final int HORIZ_SPACINGC4 = 765; //horizontal spacing for column 3 of layout
 	
-	static int settingsFrameHeight = 600;
+	static int settingsFrameHeight = 550;
 	static int settingsFrameWidth = 570;
 	
 	
@@ -123,7 +123,7 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!showAdvancedOptions.isSelected()){
-					settingsFrameHeight = 600;
+					settingsFrameHeight = 550;
 					settingsFrameWidth = 570;
 					frame.setSize(settingsFrameWidth,settingsFrameHeight);
 					
@@ -159,7 +159,7 @@ public class GUI {
 					lbl17.setVisible(false);
 					
 				}else{
-					settingsFrameHeight = 600;
+					settingsFrameHeight = 550;
 					settingsFrameWidth = 1025;
 					frame.setSize(settingsFrameWidth,settingsFrameHeight);
 					
@@ -237,7 +237,7 @@ public class GUI {
 		scrollPane = new JScrollPane(settingsPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        settingsPanel.setPreferredSize(new Dimension(1000, 700));
+        settingsPanel.setPreferredSize(new Dimension(1000, 550));
 		// set settingsPanel layout to sp (defined earlier)
 		settingsPanel.setLayout(sp);
 
@@ -396,19 +396,19 @@ public class GUI {
 		
 			//lbl1
 				sp.putConstraint(SpringLayout.WEST, lbl1, HORIZ_SPACINGC1, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, lbl1, 30+5, SpringLayout.NORTH, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, lbl1, VERT_SPACING, SpringLayout.NORTH, settingsPanel);
 	
 			//lbl2
 				sp.putConstraint(SpringLayout.WEST, lbl2, HORIZ_SPACINGC1, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, lbl2, VERT_SPACING, SpringLayout.SOUTH, lbl1);
+				sp.putConstraint(SpringLayout.NORTH, lbl2, VERT_SPACING+5, SpringLayout.SOUTH, lbl1);
 		
 			//lbl3
 				sp.putConstraint(SpringLayout.WEST, lbl3, HORIZ_SPACINGC1, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, lbl3, VERT_SPACING, SpringLayout.SOUTH, lbl2);
+				sp.putConstraint(SpringLayout.NORTH, lbl3, VERT_SPACING+5, SpringLayout.SOUTH, lbl2);
 				
 			//lbl0
 				sp.putConstraint(SpringLayout.WEST, lbl0, HORIZ_SPACINGC1, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, lbl0, VERT_SPACING+10, SpringLayout.SOUTH, lbl3);
+				sp.putConstraint(SpringLayout.NORTH, lbl0, VERT_SPACING+3, SpringLayout.SOUTH, lbl3);
 			
 			//run EDDY
 				sp.putConstraint(SpringLayout.WEST, runEDDY, HORIZ_SPACINGC1 -7, SpringLayout.WEST, settingsPanel);
@@ -417,16 +417,16 @@ public class GUI {
 		// Column2
 
 			sp.putConstraint(SpringLayout.WEST, showAdvancedOptions, HORIZ_SPACINGC2, SpringLayout.WEST, settingsPanel);
-			sp.putConstraint(SpringLayout.NORTH, showAdvancedOptions, 20, SpringLayout.SOUTH, classInfoFileSelector);
+			sp.putConstraint(SpringLayout.NORTH, showAdvancedOptions, 10, SpringLayout.SOUTH, classInfoFileSelector);
 			
 			sp.putConstraint(SpringLayout.WEST, inputDataFileSelector, HORIZ_SPACINGC2, SpringLayout.WEST, settingsPanel);
-			sp.putConstraint(SpringLayout.NORTH, inputDataFileSelector, 30, SpringLayout.NORTH, settingsPanel);
+			sp.putConstraint(SpringLayout.NORTH, inputDataFileSelector, VERT_SPACING-5, SpringLayout.NORTH, settingsPanel);
 		
 			sp.putConstraint(SpringLayout.WEST, geneSetFileSelector, HORIZ_SPACINGC2, SpringLayout.WEST, settingsPanel);
-			sp.putConstraint(SpringLayout.NORTH, geneSetFileSelector, 10, SpringLayout.SOUTH, inputDataFileSelector);
+			sp.putConstraint(SpringLayout.NORTH, geneSetFileSelector, 5, SpringLayout.SOUTH, inputDataFileSelector);
 			
 			sp.putConstraint(SpringLayout.WEST, classInfoFileSelector, HORIZ_SPACINGC2, SpringLayout.WEST, settingsPanel);
-			sp.putConstraint(SpringLayout.NORTH, classInfoFileSelector, 15, SpringLayout.SOUTH, geneSetFileSelector);
+			sp.putConstraint(SpringLayout.NORTH, classInfoFileSelector, 5, SpringLayout.SOUTH, geneSetFileSelector);
 			
 			
 			
@@ -470,7 +470,7 @@ public class GUI {
 				
 			//lbl13
 				sp.putConstraint(SpringLayout.WEST, lbl13, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, lbl13, VERT_SPACING, SpringLayout.SOUTH, lbl12);
+				sp.putConstraint(SpringLayout.NORTH, lbl13, VERT_SPACING+5, SpringLayout.SOUTH, lbl12);
 				
 			//lbl14
 				sp.putConstraint(SpringLayout.WEST, lbl14, HORIZ_SPACINGC3, SpringLayout.WEST, settingsPanel);
@@ -490,55 +490,55 @@ public class GUI {
 				
 			//reset button
 				sp.putConstraint(SpringLayout.WEST, resetFields, HORIZ_SPACINGC3-10, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, resetFields, VERT_SPACING+10, SpringLayout.SOUTH, lbl17);
+				sp.putConstraint(SpringLayout.NORTH, resetFields, VERT_SPACING, SpringLayout.SOUTH, lbl17);
 				
 		//Column 4
 				sp.putConstraint(SpringLayout.WEST, edf, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, edf, 30, SpringLayout.NORTH, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, edf, 20, SpringLayout.NORTH, settingsPanel);
 				
 				sp.putConstraint(SpringLayout.WEST, minGeneSetSize, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, minGeneSetSize, 25, SpringLayout.SOUTH, edf);
+				sp.putConstraint(SpringLayout.NORTH, minGeneSetSize, 15, SpringLayout.SOUTH, edf);
 				
 				sp.putConstraint(SpringLayout.WEST, maxGeneSetSize, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, maxGeneSetSize, 15, SpringLayout.SOUTH, minGeneSetSize);
+				sp.putConstraint(SpringLayout.NORTH, maxGeneSetSize, 5, SpringLayout.SOUTH, minGeneSetSize);
 				
 				sp.putConstraint(SpringLayout.WEST, numThreads, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, numThreads, 15, SpringLayout.SOUTH, maxGeneSetSize);
+				sp.putConstraint(SpringLayout.NORTH, numThreads, 5, SpringLayout.SOUTH, maxGeneSetSize);
 				
 				sp.putConstraint(SpringLayout.WEST, pVal, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, pVal, 15, SpringLayout.SOUTH, numThreads);
+				sp.putConstraint(SpringLayout.NORTH, pVal, 5, SpringLayout.SOUTH, numThreads);
 				
 				sp.putConstraint(SpringLayout.WEST, quickPermEnabled, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, quickPermEnabled, 20, SpringLayout.SOUTH, pVal);
+				sp.putConstraint(SpringLayout.NORTH, quickPermEnabled, 10, SpringLayout.SOUTH, pVal);
 				
 				sp.putConstraint(SpringLayout.WEST, numNetStruc, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, numNetStruc, 15, SpringLayout.SOUTH, quickPermEnabled);
+				sp.putConstraint(SpringLayout.NORTH, numNetStruc, 5, SpringLayout.SOUTH, quickPermEnabled);
 				
 				sp.putConstraint(SpringLayout.WEST, numPerms, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, numPerms, 15, SpringLayout.SOUTH, numNetStruc);
+				sp.putConstraint(SpringLayout.NORTH, numPerms, 5, SpringLayout.SOUTH, numNetStruc);
 				
 
 				sp.putConstraint(SpringLayout.WEST, resamplingRate, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, resamplingRate, 15, SpringLayout.SOUTH, numPerms);
+				sp.putConstraint(SpringLayout.NORTH, resamplingRate, 5, SpringLayout.SOUTH, numPerms);
 			
 				sp.putConstraint(SpringLayout.WEST, priorDirectionality, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, priorDirectionality, 15, SpringLayout.SOUTH, resamplingRate);
+				sp.putConstraint(SpringLayout.NORTH, priorDirectionality, 5, SpringLayout.SOUTH, resamplingRate);
 		
 				sp.putConstraint(SpringLayout.WEST, includeNeighbor, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
 				sp.putConstraint(SpringLayout.NORTH, includeNeighbor, 10, SpringLayout.SOUTH, priorDirectionality);
 				
 				sp.putConstraint(SpringLayout.WEST, approximatePermuations, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, approximatePermuations, 20, SpringLayout.SOUTH, includeNeighbor);
+				sp.putConstraint(SpringLayout.NORTH, approximatePermuations, 10, SpringLayout.SOUTH, includeNeighbor);
 				
 				sp.putConstraint(SpringLayout.WEST, priorWeight, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, priorWeight, 30, SpringLayout.SOUTH, approximatePermuations);
+				sp.putConstraint(SpringLayout.NORTH, priorWeight, 15, SpringLayout.SOUTH, approximatePermuations);
 				
 				sp.putConstraint(SpringLayout.WEST, maxNumParents, HORIZ_SPACINGC4, SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, maxNumParents, 30, SpringLayout.SOUTH, priorWeight);
+				sp.putConstraint(SpringLayout.NORTH, maxNumParents, 15, SpringLayout.SOUTH, priorWeight);
 				
 			//output box
 				sp.putConstraint(SpringLayout.WEST, output, HORIZ_SPACINGC1 -5 , SpringLayout.WEST, settingsPanel);
-				sp.putConstraint(SpringLayout.NORTH, output, 375, SpringLayout.NORTH, settingsPanel);
+				sp.putConstraint(SpringLayout.NORTH, output, 200, SpringLayout.NORTH, settingsPanel);
 			
 			// add to tabbed pane
 		//tabbedPane.add("Configure", settingsPanel);
@@ -572,8 +572,9 @@ public class GUI {
     
 	public static void show() {
 		frame.setSize(settingsFrameWidth, settingsFrameHeight);
-		frame.setResizable(true);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setTitle("EDDY: Evaluation of Differential DependencY");
 		
 		//hide advanced parameters by default
 		edf.setVisible(false);
