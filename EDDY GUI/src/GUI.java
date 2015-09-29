@@ -4,8 +4,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.NumberFormat;
@@ -17,6 +15,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -25,8 +24,6 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
-
-import org.omg.CORBA.portable.InputStream;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -301,19 +298,23 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				output.setText("");
-				try {
-					ProcessBuilder pb = new ProcessBuilder("java", "-jar", "eddy_mt-v2_5_3.jar");
-					//pb.redirectErrorStream(true);
-					
-					Process p = pb.start();
-					java.io.InputStream is = p.getInputStream();
-					BufferedReader br = new BufferedReader(new InputStreamReader(is));
-					for (String line = br.readLine(); line != null; line = br.readLine()) {
-						output.append(line+"\n"); // Or just ignore it
+				if(inputFile != null && geneSetFile != null && classInfoFile != null){
+					try {
+						ProcessBuilder pb = new ProcessBuilder("java", "-jar", "eddy_mt-v2_5_3.jar","-d",inputFile,"-g",geneSetFile, "-c", classInfoFile);
+						//pb.redirectErrorStream(true);
+						
+						Process p = pb.start();
+						java.io.InputStream is = p.getInputStream();
+						BufferedReader br = new BufferedReader(new InputStreamReader(is));
+						for (String line = br.readLine(); line != null; line = br.readLine()) {
+							output.append(line+"\n"); // Or just ignore it
+						}
+						p.waitFor();
+					} catch (Exception ex) {
+						ex.printStackTrace();
 					}
-					p.waitFor();
-				} catch (Exception ex) {
-					ex.printStackTrace();
+				}else{
+					JOptionPane.showMessageDialog(null, "You have not selected all the file parameters!", "*******WARNING*******", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
