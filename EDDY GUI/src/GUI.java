@@ -25,6 +25,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
+import java.io.InputStream;
+
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
@@ -297,25 +299,20 @@ public class GUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				output.setText("");
-				if(inputFile != null && geneSetFile != null && classInfoFile != null){
-					try {
-						ProcessBuilder pb = new ProcessBuilder("java", "-jar", "eddy_mt-v2_5_3.jar","-d",inputFile,"-g",geneSetFile, "-c", classInfoFile);
-						//pb.redirectErrorStream(true);
-						
-						Process p = pb.start();
-						java.io.InputStream is = p.getInputStream();
-						BufferedReader br = new BufferedReader(new InputStreamReader(is));
-						for (String line = br.readLine(); line != null; line = br.readLine()) {
-							output.append(line+"\n"); // Or just ignore it
-						}
-						p.waitFor();
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}else{
-					JOptionPane.showMessageDialog(null, "You have not selected all the file parameters!", "*******WARNING*******", JOptionPane.WARNING_MESSAGE);
+				try{
+					String[] commands = {"java", "-jar", "Desktop/neweddy.jar"};
+					Process ps=Runtime.getRuntime().exec(commands);
+			        ps.waitFor();
+			        java.io.InputStream is=ps.getInputStream();
+			        byte b[]=new byte[is.available()];
+			        is.read(b,0,b.length);
+			        System.out.println(new String(b));
+				    
+				}catch(Exception ex){
+					ex.printStackTrace();
+					
 				}
+				
 			}
 		});
 	}

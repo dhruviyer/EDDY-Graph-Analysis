@@ -5,5 +5,6 @@
 	<classpathentry kind="lib" path="eddy_mt-v2_5_3.jar"/>
 	<classpathentry kind="lib" path="eddy-repacked.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/diyer/Desktop/neweddy.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
