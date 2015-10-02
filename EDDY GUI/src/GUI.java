@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
@@ -36,6 +37,15 @@ import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+/**
+ * 
+ * @author Dhruv Iyer
+ *
+ *GUI wrapper program for EDDY software developed by Dr. Seungchan Kim and team at 
+ *the Translational Genomics Research Institute (TGen)
+ *
+ */
+
 public class GUI {
 
 	// arguments to EDDY
@@ -43,23 +53,23 @@ public class GUI {
 	static JButton geneSetFileSelector;
 	static JButton classInfoFileSelector;
 	static JCheckBox edf;
-	static JFormattedTextField minGeneSetSize;
-	static JFormattedTextField maxGeneSetSize;
-	static JFormattedTextField numThreads;
-	static JFormattedTextField pVal;
+	static JTextField minGeneSetSize;
+	static JTextField maxGeneSetSize;
+	static JTextField numThreads;
+	static JTextField pVal;
 	static JCheckBox quickPermEnabled;
-	static JFormattedTextField numNetStruc;
-	static JFormattedTextField numPerms;
+	static JTextField numNetStruc;
+	static JTextField numPerms;
 	static JButton runEDDY;
 	static JTextArea output;
 	static JCheckBox showAdvancedOptions;
-	static JFormattedTextField resamplingRate;
+	static JTextField resamplingRate;
 	static JCheckBox priorDirectionality;
 	static JCheckBox includeNeighbor;
 	static JCheckBox approximatePermuations;
-	static JFormattedTextField priorWeight;
+	static JTextField priorWeight;
 	static JButton resetFields;
-	static JFormattedTextField maxNumParents;
+	static JTextField maxNumParents;
 	static JScrollPane outputscroll;
 	
 	// various labels
@@ -386,9 +396,7 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try{
-					String[] commands;
-					if(numThreads.getText() == null){ //don't include numThreads
-						commands = new String[]{"java", "-jar", eddyFilePath, 
+						String[] commands = new String[]{"java", "-jar", eddyFilePath, 
 								"-c", classInfoFile,
 								"-d",inputFile, 
 								"-g", geneSetFile, 
@@ -405,7 +413,7 @@ public class GUI {
 								"-in", String.valueOf(includeNeighbor.isSelected()),
 								"-ap", String.valueOf(approximatePermuations.isSelected()),
 								"-pw", priorWeight.getText()};
-					}else{
+						/*else{
 						commands = new String[]{"java", "-jar", eddyFilePath, 
 								"-c", classInfoFile,
 								"-d",inputFile, 
@@ -424,7 +432,7 @@ public class GUI {
 								"-in", String.valueOf(includeNeighbor.isSelected()),
 								"-ap", String.valueOf(approximatePermuations.isSelected()),
 								"-pw", priorWeight.getText()};
-					}
+					}*/
 					Process p = Runtime.getRuntime().exec(commands);
 					p.waitFor();
 					java.io.InputStream is=p.getInputStream();
@@ -458,35 +466,42 @@ public class GUI {
 		// set settingsPanel layout to sp (defined earlier)
 		settingsPanel.setLayout(sp);
 
-		// formatter to restrict TextBoxes to numbers only
+		// formatter to restrict TextBoxes to integers only
 		NumberFormat format = NumberFormat.getInstance();
 		NumberFormatter formatter = new NumberFormatter(format);
 		formatter.setValueClass(Integer.class);
 		formatter.setMinimum(0);
 		formatter.setMaximum(Integer.MAX_VALUE);
 
+		//another formatter for pVal
+		NumberFormat format2 = NumberFormat.getInstance();
+		NumberFormatter formatter2 = new NumberFormatter(format);
+		formatter.setValueClass(Number.class);
+		formatter.setMinimum(0);
+		formatter.setMaximum(Double.MAX_VALUE);
+		
 		// initialize settings components
 		inputDataFileSelector = new JButton("Select Input File");
 		geneSetFileSelector = new JButton("Select Gene Set File");
 		classInfoFileSelector = new JButton("Select Class File");
 		edf = new JCheckBox("Edge direction fixed?");
-		minGeneSetSize = new JFormattedTextField(formatter);
-		maxGeneSetSize = new JFormattedTextField(formatter);
-		numThreads = new JFormattedTextField(formatter);
-		pVal = new JFormattedTextField(formatter);
+		minGeneSetSize = new JTextField();
+		maxGeneSetSize = new JTextField();
+		numThreads = new JTextField();
+		pVal = new JTextField();
 		quickPermEnabled = new JCheckBox("Quick permutations enabled?");
-		numNetStruc = new JFormattedTextField(formatter);
-		numPerms = new JFormattedTextField(formatter);
+		numNetStruc = new JTextField();
+		numPerms = new JTextField();
 		runEDDY = new JButton("Run EDDY");
 		output = new JTextArea("Welcome to EDDY \nPlease input arguments and click \"run EDDY\"\n");
 		showAdvancedOptions = new JCheckBox("Show advanced options", false);
-		resamplingRate = new JFormattedTextField(formatter);
+		resamplingRate = new JTextField();
 		priorDirectionality = new JCheckBox("<html>Use directionality of <br>prior edges?</html>");
 		includeNeighbor = new JCheckBox("<html>Include neighbor-of <br>interactions from prior?</html>");
 		approximatePermuations = new JCheckBox("Approximate Permuations?");
-		priorWeight = new JFormattedTextField(formatter);
+		priorWeight = new JTextField();
 		resetFields = new JButton("Reset");
-		maxNumParents = new JFormattedTextField(formatter);
+		maxNumParents = new JTextField();
 
 		// cuatomize console window
 		output.setBackground(Color.BLACK);
