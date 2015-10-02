@@ -1,16 +1,19 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.net.URL;
 import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -21,11 +24,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
+import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
-
-import java.io.InputStream;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -108,16 +110,99 @@ public class GUI {
 	static String inputFile;
 	static String geneSetFile;
 	static String classInfoFile;
-
+	static String eddyFilePath;
+	
+	//see if initial eddy file selector has closed due to finishing or manual termination
+	static boolean cleanClose = false;
+	
 	// file selector
 	static JFileChooser fc;
 
 	public static void main(String[] args) {
-		init(); // initialize elements
-		add(); // add elements to panels and frames
-		setListeners(); // add listeners
-		setDefaults(); // set any and all default values
-		show(); // display
+		
+		//Step 1: creat dialog box which leads user to select root eddy directory
+		
+		JDialog dialog = new JDialog(new JFrame(), "EDDY: Evaluation of Differential DependencY", true);
+		dialog.setBackground(Color.gray);
+		JPanel panel = new JPanel(new GridLayout(2, 1));
+		dialog.add(panel);
+		panel.add(new JLabel("<html><b>Welcome to EDDY: Evalution of Differential DependencY</b><br><br>On the next screen, you will select the path to your eddy.jar"));
+		JButton bttn = new JButton("Select path to EDDY");
+		bttn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cleanClose = true;
+				dialog.dispose();
+			}
+		});
+		panel.add(bttn);
+		dialog.setLocationRelativeTo(null);
+		dialog.setSize(500, 200);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				if(!cleanClose)
+					System.exit(0);
+					
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		dialog.setVisible(true);
+		
+		JFileChooser eddyPathChooser = new JFileChooser();
+	    int returnValue = eddyPathChooser.showOpenDialog(null);
+	    if( returnValue == JFileChooser.APPROVE_OPTION ) {
+	        eddyFilePath= eddyPathChooser.getSelectedFile().getPath();
+	    }	
+		
+	    if(eddyFilePath == null)//test to see if eddy file path is selected, otherwise exit the program to prevent crashes
+	    	System.exit(0);
+	    else{ //launch full eddy gui
+		    init(); // initialize elements
+			add(); // add elements to panels and frames
+			setListeners(); // add listeners
+			setDefaults(); // set any and all default values
+			show(); // display
+	    }
+	  
 	}
 
 	private static void setDefaults() {
@@ -133,6 +218,7 @@ public class GUI {
 		priorWeight.setText("0.0");
 		edf.setSelected(true);
 		quickPermEnabled.setSelected(false);
+		maxNumParents.setText("3");
 	}
 
 	private static void setListeners() {
@@ -300,14 +386,51 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try{
-					String[] commands = {"java", "-jar", "Desktop/neweddy.jar"};
-					Process ps=Runtime.getRuntime().exec(commands);
-			        ps.waitFor();
-			        java.io.InputStream is=ps.getInputStream();
+					String[] commands;
+					if(numThreads.getText() == null){ //don't include numThreads
+						commands = new String[]{"java", "-jar", eddyFilePath, 
+								"-c", classInfoFile,
+								"-d",inputFile, 
+								"-g", geneSetFile, 
+								"-edf", String.valueOf(edf.isSelected()),
+								"-m", minGeneSetSize.getText(),
+								"-M", maxGeneSetSize.getText(),
+								"-mp", maxNumParents.getText(),
+								"-p", pVal.getText(),
+								"-qp", String.valueOf(quickPermEnabled.isSelected()),
+								"-s", numNetStruc.getText(),
+								"-r", numPerms.getText(),
+								"-rs", resamplingRate.getText(),
+								"-pd", String.valueOf(priorDirectionality.isSelected()),
+								"-in", String.valueOf(includeNeighbor.isSelected()),
+								"-ap", String.valueOf(approximatePermuations.isSelected()),
+								"-pw", priorWeight.getText()};
+					}else{
+						commands = new String[]{"java", "-jar", eddyFilePath, 
+								"-c", classInfoFile,
+								"-d",inputFile, 
+								"-g", geneSetFile, 
+								"-edf", String.valueOf(edf.isSelected()),
+								"-m", minGeneSetSize.getText(),
+								"-M", maxGeneSetSize.getText(),
+								"-mp", maxNumParents.getText(),
+								"-mt", numThreads.getText(),
+								"-p", pVal.getText(),
+								"-qp", String.valueOf(quickPermEnabled.isSelected()),
+								"-s", numNetStruc.getText(),
+								"-r", numPerms.getText(),
+								"-rs", resamplingRate.getText(),
+								"-pd", String.valueOf(priorDirectionality.isSelected()),
+								"-in", String.valueOf(includeNeighbor.isSelected()),
+								"-ap", String.valueOf(approximatePermuations.isSelected()),
+								"-pw", priorWeight.getText()};
+					}
+					Process p = Runtime.getRuntime().exec(commands);
+					p.waitFor();
+					java.io.InputStream is=p.getInputStream();
 			        byte b[]=new byte[is.available()];
 			        is.read(b,0,b.length);
-			        System.out.println(new String(b));
-				    
+			        output.append((new String(b))+"\n");
 				}catch(Exception ex){
 					ex.printStackTrace();
 					
@@ -370,7 +493,7 @@ public class GUI {
 		output.setForeground(Color.WHITE);
 		output.setFont(new Font("Serif", Font.TYPE1_FONT, 14));
 		output.setEditable(false);
-		output.setPreferredSize(new Dimension(500, 1500));
+		output.setPreferredSize(new Dimension(1500, 1500));
 		output.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE, 1),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
@@ -682,7 +805,8 @@ public class GUI {
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("EDDY: Evaluation of Differential DependencY");
-
+		frame.setLocationRelativeTo(null);
+		
 		// hide advanced parameters by default
 		edf.setVisible(false);
 		minGeneSetSize.setVisible(false);
