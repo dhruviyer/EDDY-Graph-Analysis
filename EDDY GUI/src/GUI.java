@@ -120,7 +120,7 @@ public class GUI {
 	static String inputFile;
 	static String geneSetFile;
 	static String classInfoFile;
-	static String eddyFilePath;
+	static String eddyFilePath = "";
 	
 	//see if initial eddy file selector has closed due to finishing or manual termination
 	static boolean cleanClose = false;
@@ -128,94 +128,91 @@ public class GUI {
 	// file selector
 	static JFileChooser fc;
 
-	public static void main(String[] args) {
-		
-		//Step 1: creat dialog box which leads user to select root eddy directory
-		
-		JDialog dialog = new JDialog(new JFrame(), "EDDY: Evaluation of Differential DependencY", true);
-		dialog.setBackground(Color.gray);
-		JPanel panel = new JPanel(new GridLayout(2, 1));
-		dialog.add(panel);
-		panel.add(new JLabel("<html><b>Welcome to EDDY: Evalution of Differential DependencY</b><br><br>On the next screen, you will select the path to your eddy.jar"));
-		JButton bttn = new JButton("Select path to EDDY");
-		bttn.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cleanClose = true;
-				dialog.dispose();
-			}
-		});
-		panel.add(bttn);
-		dialog.setLocationRelativeTo(null);
-		dialog.setSize(500, 200);
-		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		dialog.addWindowListener(new WindowListener() {
-			
-			@Override
-			public void windowOpened(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void windowIconified(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void windowDeiconified(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void windowDeactivated(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void windowClosing(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void windowClosed(WindowEvent e) {
-				if(!cleanClose)
-					System.exit(0);
-					
-			}
-			
-			@Override
-			public void windowActivated(WindowEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		dialog.setVisible(true);
-		
-		JFileChooser eddyPathChooser = new JFileChooser();
-	    int returnValue = eddyPathChooser.showOpenDialog(null);
-	    if( returnValue == JFileChooser.APPROVE_OPTION ) {
-	        eddyFilePath= eddyPathChooser.getSelectedFile().getPath();
-	    }	
-		
-	    if(eddyFilePath == null)//test to see if eddy file path is selected, otherwise exit the program to prevent crashes
-	    	System.exit(0);
-	    else{ //launch full eddy gui
+	public GUI(){
 		    init(); // initialize elements
 			add(); // add elements to panels and frames
 			setListeners(); // add listeners
 			setDefaults(); // set any and all default values
 			show(); // display
-	    }
-	  
+	}
+	
+	private void eddyPathSelector(){
+		//Step 1: creat dialog box which leads user to select root eddy directory
+		
+				JDialog dialog = new JDialog(new JFrame(), "EDDY: Evaluation of Differential DependencY", true);
+				dialog.setBackground(Color.gray);
+				JPanel panel = new JPanel(new GridLayout(2, 1));
+				dialog.add(panel);
+				panel.add(new JLabel("<html><b>Welcome to EDDY: Evalution of Differential DependencY</b><br><br>On the next screen, you will select the path to your eddy.jar"));
+				JButton bttn = new JButton("Select path to EDDY");
+				bttn.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						cleanClose = true;
+						dialog.dispose();
+					}
+				});
+				panel.add(bttn);
+				dialog.setLocationRelativeTo(null);
+				dialog.setSize(500, 200);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.addWindowListener(new WindowListener() {
+					
+					@Override
+					public void windowOpened(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowIconified(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowDeiconified(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowDeactivated(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowClosing(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowClosed(WindowEvent e) {
+						if(!cleanClose)
+							System.exit(0);
+							
+					}
+					
+					@Override
+					public void windowActivated(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				dialog.setVisible(true);
+				
+				JFileChooser eddyPathChooser = new JFileChooser();
+			    int returnValue = eddyPathChooser.showOpenDialog(null);
+			    if( returnValue == JFileChooser.APPROVE_OPTION ) {
+			        eddyFilePath= eddyPathChooser.getSelectedFile().getPath();
+			    }	
+				
 	}
 
-	private static void setDefaults() {
+	private void setDefaults() {
 		minGeneSetSize.setText("-1");
 		maxGeneSetSize.setText("-1");
 		pVal.setText("0.05");
@@ -231,7 +228,7 @@ public class GUI {
 		maxNumParents.setText("3");
 	}
 
-	private static void setListeners() {
+	private void setListeners() {
 		showAdvancedOptions.addActionListener(new ActionListener() {
 
 			@Override
@@ -353,12 +350,14 @@ public class GUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int returnVal = fc.showOpenDialog(settingsPanel);
+				/*int returnVal = fc.showOpenDialog(settingsPanel);
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					geneSetFile = fc.getSelectedFile().getPath();
 					geneSetFileSelector.setText(fc.getSelectedFile().getName());
-				}
+				}*/
+				
+				GeneSetSelector gs = new GeneSetSelector();
 
 			}
 		});
@@ -395,8 +394,9 @@ public class GUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				runEDDY.setText("Please wait...");
 				try{
-						String[] commands = new String[]{"java", "-jar", eddyFilePath, 
+						String[] commands = new String[]{"java", "-jar", "neweddy.jar", 
 								"-c", classInfoFile,
 								"-d",inputFile, 
 								"-g", geneSetFile, 
@@ -434,21 +434,22 @@ public class GUI {
 								"-pw", priorWeight.getText()};
 					}*/
 					Process p = Runtime.getRuntime().exec(commands);
-					p.waitFor();
-					java.io.InputStream is=p.getInputStream();
-			        byte b[]=new byte[is.available()];
-			        is.read(b,0,b.length);
-			        output.append((new String(b))+"\n");
+					while(p.isAlive()){					
+						java.io.InputStream is=p.getInputStream();
+				        byte b[]=new byte[is.available()];
+				        is.read(b,0,b.length);
+				        output.append((new String(b))+"\n");
+					}
 				}catch(Exception ex){
 					ex.printStackTrace();
 					
 				}
-				
+				runEDDY.setText("Run EDDY");
 			}
 		});
 	}
 
-	public static void init() {
+	public void init() {
 		// initialize frame
 		frame = new JFrame();
 
@@ -586,7 +587,7 @@ public class GUI {
 
 	}
 
-	public static void add() {
+	public void add() {
 
 		// add to settings panel
 		settingsPanel.add(lbl0);
@@ -791,7 +792,7 @@ public class GUI {
 		frame.add(tabbedPane);
 	}
 
-	private static void initFX(JFXPanel fxPanel) {
+	private void initFX(JFXPanel fxPanel) {
 		// This method is invoked on the JavaFX thread, create the scene to hold
 		// all of the elements
 		Scene scene = createScene();
@@ -799,7 +800,7 @@ public class GUI {
 
 	}
 
-	private static Scene createScene() {
+	private Scene createScene() {
 		Group root = new Group();
 		Scene scene = new Scene(root);
 
@@ -815,7 +816,7 @@ public class GUI {
 		return (scene);
 	}
 
-	public static void show() {
+	public void show() {
 		frame.setSize(settingsFrameWidth, settingsFrameHeight);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
