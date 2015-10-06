@@ -350,15 +350,7 @@ public class GUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				/*int returnVal = fc.showOpenDialog(settingsPanel);
-
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					geneSetFile = fc.getSelectedFile().getPath();
-					geneSetFileSelector.setText(fc.getSelectedFile().getName());
-				}*/
-				
 				GeneSetSelector gs = new GeneSetSelector();
-
 			}
 		});
 
@@ -399,7 +391,7 @@ public class GUI {
 						String[] commands = new String[]{"java", "-jar", "neweddy.jar", 
 								"-c", classInfoFile,
 								"-d",inputFile, 
-								"-g", geneSetFile, 
+								"-g", "geneset", 
 								"-edf", String.valueOf(edf.isSelected()),
 								"-m", minGeneSetSize.getText(),
 								"-M", maxGeneSetSize.getText(),
@@ -483,7 +475,7 @@ public class GUI {
 		
 		// initialize settings components
 		inputDataFileSelector = new JButton("Select Input File");
-		geneSetFileSelector = new JButton("Select Gene Set File");
+		geneSetFileSelector = new JButton("Select Gene Set");
 		classInfoFileSelector = new JButton("Select Class File");
 		edf = new JCheckBox("Edge direction fixed?");
 		minGeneSetSize = new JTextField();
