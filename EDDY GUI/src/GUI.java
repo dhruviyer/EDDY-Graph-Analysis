@@ -1,13 +1,16 @@
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
@@ -15,21 +18,19 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
+import eddy.MyRunEDDY;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
@@ -41,8 +42,8 @@ import javafx.scene.web.WebView;
  * 
  * @author Dhruv Iyer
  *
- *GUI wrapper program for EDDY software developed by Dr. Seungchan Kim and team at 
- *the Translational Genomics Research Institute (TGen)
+ *         GUI wrapper program for EDDY software developed by Dr. Seungchan Kim
+ *         and team at the Translational Genomics Research Institute (TGen)
  *
  */
 
@@ -71,7 +72,7 @@ public class GUI {
 	static JButton resetFields;
 	static JTextField maxNumParents;
 	static JScrollPane outputscroll;
-	
+
 	// various labels
 	static JLabel lbl0;
 	static JLabel lbl1;
@@ -96,9 +97,12 @@ public class GUI {
 	// various panes and containers
 	static JTabbedPane tabbedPane;
 	static JPanel settingsPanel;
-	static JFXPanel cytoscapePanel;
+	static JFXPanel cytoscapePane;
 	static JScrollPane scrollPane;
+	static JScrollPane resultsScrollPane;
 	static JFrame frame;
+
+	static File temp;
 
 	static SpringLayout sp;
 
@@ -117,99 +121,103 @@ public class GUI {
 	static int settingsFrameWidth = 570;
 
 	// files
-	static String inputFile;
-	static String geneSetFile;
-	static String classInfoFile;
+	static String inputFile = "";
+	static String geneSetFile = "";
+	static String classInfoFile = "";
 	static String eddyFilePath = "";
-	
-	//see if initial eddy file selector has closed due to finishing or manual termination
+
+	// see if initial eddy file selector has closed due to finishing or manual
+	// termination
 	static boolean cleanClose = false;
-	
+
 	// file selector
 	static JFileChooser fc;
 
-	public GUI(){
-		    init(); // initialize elements
-			add(); // add elements to panels and frames
-			setListeners(); // add listeners
-			setDefaults(); // set any and all default values
-			show(); // display
+	public GUI() {
+		// eddyPathSelector();
+		init(); // initialize elements
+		add(); // add elements to panels and frames
+		setListeners(); // add listeners
+		setDefaults(); // set any and all default values
+		show(); // display
 	}
-	
-	private void eddyPathSelector(){
-		//Step 1: creat dialog box which leads user to select root eddy directory
-		
-				JDialog dialog = new JDialog(new JFrame(), "EDDY: Evaluation of Differential DependencY", true);
-				dialog.setBackground(Color.gray);
-				JPanel panel = new JPanel(new GridLayout(2, 1));
-				dialog.add(panel);
-				panel.add(new JLabel("<html><b>Welcome to EDDY: Evalution of Differential DependencY</b><br><br>On the next screen, you will select the path to your eddy.jar"));
-				JButton bttn = new JButton("Select path to EDDY");
-				bttn.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						cleanClose = true;
-						dialog.dispose();
-					}
-				});
-				panel.add(bttn);
-				dialog.setLocationRelativeTo(null);
-				dialog.setSize(500, 200);
-				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialog.addWindowListener(new WindowListener() {
-					
-					@Override
-					public void windowOpened(WindowEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void windowIconified(WindowEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void windowDeiconified(WindowEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void windowDeactivated(WindowEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void windowClosing(WindowEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void windowClosed(WindowEvent e) {
-						if(!cleanClose)
-							System.exit(0);
-							
-					}
-					
-					@Override
-					public void windowActivated(WindowEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
-				dialog.setVisible(true);
-				
-				JFileChooser eddyPathChooser = new JFileChooser();
-			    int returnValue = eddyPathChooser.showOpenDialog(null);
-			    if( returnValue == JFileChooser.APPROVE_OPTION ) {
-			        eddyFilePath= eddyPathChooser.getSelectedFile().getPath();
-			    }	
-				
+
+	private void eddyPathSelector() {
+		// Step 1: creat dialog box which leads user to select root eddy
+		// directory
+
+		JDialog dialog = new JDialog(new JFrame(), "EDDY: Evaluation of Differential DependencY", true);
+		dialog.setBackground(Color.gray);
+		JPanel panel = new JPanel(new GridLayout(2, 1));
+		dialog.add(panel);
+		panel.add(new JLabel(
+				"<html><b>Welcome to EDDY: Evalution of Differential DependencY</b><br><br>On the next screen, you will select the path to your eddy.jar"));
+		JButton bttn = new JButton("Select path to EDDY");
+		bttn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cleanClose = true;
+				dialog.dispose();
+			}
+		});
+		panel.add(bttn);
+		dialog.setLocationRelativeTo(null);
+		dialog.setSize(500, 200);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.addWindowListener(new WindowListener() {
+
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowClosed(WindowEvent e) {
+				if (!cleanClose)
+					System.exit(0);
+
+			}
+
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		dialog.setVisible(true);
+
+		JFileChooser eddyPathChooser = new JFileChooser();
+		int returnValue = eddyPathChooser.showOpenDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			eddyFilePath = eddyPathChooser.getSelectedFile().getPath();
+		}
+
 	}
 
 	private void setDefaults() {
@@ -226,6 +234,7 @@ public class GUI {
 		edf.setSelected(true);
 		quickPermEnabled.setSelected(false);
 		maxNumParents.setText("3");
+
 	}
 
 	private void setListeners() {
@@ -315,7 +324,8 @@ public class GUI {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				if (tabbedPane.getSelectedIndex() == 1) {
-					frame.setSize(850, 675);
+					frame.setSize(800, 600);
+					runEDDY.setText("Run EDDY");
 				} else {
 					frame.setSize(settingsFrameWidth, settingsFrameHeight);
 				}
@@ -351,6 +361,7 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				GeneSetSelector gs = new GeneSetSelector();
+				geneSetFileSelector.setText("Gene Set Selected");
 			}
 		});
 
@@ -387,56 +398,70 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				runEDDY.setText("Please wait...");
-				try{
-						String[] commands = new String[]{"java", "-jar", "neweddy.jar", 
-								"-c", classInfoFile,
-								"-d",inputFile, 
-								"-g", "geneset", 
-								"-edf", String.valueOf(edf.isSelected()),
-								"-m", minGeneSetSize.getText(),
-								"-M", maxGeneSetSize.getText(),
-								"-mp", maxNumParents.getText(),
-								"-p", pVal.getText(),
-								"-qp", String.valueOf(quickPermEnabled.isSelected()),
-								"-s", numNetStruc.getText(),
-								"-r", numPerms.getText(),
-								"-rs", resamplingRate.getText(),
-								"-pd", String.valueOf(priorDirectionality.isSelected()),
-								"-in", String.valueOf(includeNeighbor.isSelected()),
-								"-ap", String.valueOf(approximatePermuations.isSelected()),
-								"-pw", priorWeight.getText()};
-						/*else{
-						commands = new String[]{"java", "-jar", eddyFilePath, 
-								"-c", classInfoFile,
-								"-d",inputFile, 
-								"-g", geneSetFile, 
-								"-edf", String.valueOf(edf.isSelected()),
-								"-m", minGeneSetSize.getText(),
-								"-M", maxGeneSetSize.getText(),
-								"-mp", maxNumParents.getText(),
-								"-mt", numThreads.getText(),
-								"-p", pVal.getText(),
-								"-qp", String.valueOf(quickPermEnabled.isSelected()),
-								"-s", numNetStruc.getText(),
-								"-r", numPerms.getText(),
-								"-rs", resamplingRate.getText(),
-								"-pd", String.valueOf(priorDirectionality.isSelected()),
-								"-in", String.valueOf(includeNeighbor.isSelected()),
-								"-ap", String.valueOf(approximatePermuations.isSelected()),
-								"-pw", priorWeight.getText()};
-					}*/
-					Process p = Runtime.getRuntime().exec(commands);
-					while(p.isAlive()){					
-						java.io.InputStream is=p.getInputStream();
-				        byte b[]=new byte[is.available()];
-				        is.read(b,0,b.length);
-				        output.append((new String(b))+"\n");
-					}
-				}catch(Exception ex){
+				try {
+					String[] commands = { "-c", classInfoFile, "-d", inputFile, "-g",
+							"c2.cp.v4.0.symbols.gmt.myfile.txt", "-edf", String.valueOf(edf.isSelected()), "-m",
+							minGeneSetSize.getText(), "-M", maxGeneSetSize.getText(), "-mp", maxNumParents.getText(),
+							"-p", pVal.getText(), "-qp", String.valueOf(quickPermEnabled.isSelected()), "-s",
+							numNetStruc.getText(), "-r", numPerms.getText(), "-rs", resamplingRate.getText(), "-pd",
+							String.valueOf(priorDirectionality.isSelected()), "-in",
+							String.valueOf(includeNeighbor.isSelected()), "-ap",
+							String.valueOf(approximatePermuations.isSelected()), "-pw", priorWeight.getText() };
+
+					Thread th = new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							MyRunEDDY.main(commands);
+							tabbedPane.add("Results", cytoscapePane);
+
+							try {
+								BufferedReader reader = new BufferedReader(new FileReader("eddy.gmt.output.txt"));
+								for (int counter = 0; counter < 10; counter++) {
+									reader.readLine();
+								}
+								String output = "<!DOCTYPE HTML><html><head><script type=\"text/javascript\" src=\"sorttable.js\"></script></head><body>";
+								output += "<table class=\"sortable\" border=\"1\" cellpadding=\"15\">" + "<tr>"
+										+ "<th>Name</th>" + "<th>Size</th>" + "<th>JS Divergence</th>"
+										+ "<th>P-Value</th></tr>";
+
+								String line = reader.readLine();
+								String[] inputs;
+								while (!(line.equals(""))) {
+									inputs = line.split("\t");
+									output += "<tr><td>" + inputs[0] + "</td>" + "<td>" + inputs[2] + "</td>" + "<td>"
+											+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[4]))
+											+ "</td>" + "<td>"
+											+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[5]))
+											+ "</td></tr>";
+									line = reader.readLine();
+
+								}
+								output += "</table></body></html>";
+								PrintWriter writer = new PrintWriter("index6.html", "UTF-8");
+
+								writer.write(output);
+								writer.close();
+								Platform.runLater(new Runnable() {
+									@Override
+									public void run() {
+										initFX(cytoscapePane);
+									}
+								});
+								runEDDY.setText("Check Results Tab");
+							} catch (Exception ex) {
+							}
+						}
+					});
+
+					th.start();
+					runEDDY.setText("Please Wait...");
+
+				} catch (Exception ex) {
 					ex.printStackTrace();
-					
+
 				}
-				runEDDY.setText("Run EDDY");
+				
 			}
 		});
 	}
@@ -451,13 +476,21 @@ public class GUI {
 		// initialize holding panels
 		tabbedPane = new JTabbedPane();
 		settingsPanel = new JPanel();
-		cytoscapePanel = new JFXPanel();
 		scrollPane = new JScrollPane(settingsPanel);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		settingsPanel.setPreferredSize(new Dimension(1000, 550));
-		// set settingsPanel layout to sp (defined earlier)
 		settingsPanel.setLayout(sp);
+
+		cytoscapePane = new JFXPanel();
+		/*
+		 * resultsScrollPane = new JScrollPane(cytoscapePane);
+		 * resultsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.
+		 * HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		 * resultsScrollPane.setVerticalScrollBarPolicy(JScrollPane.
+		 * VERTICAL_SCROLLBAR_AS_NEEDED); cytoscapePane.setPreferredSize(new
+		 * Dimension(800, 800));
+		 */
 
 		// formatter to restrict TextBoxes to integers only
 		NumberFormat format = NumberFormat.getInstance();
@@ -466,13 +499,13 @@ public class GUI {
 		formatter.setMinimum(0);
 		formatter.setMaximum(Integer.MAX_VALUE);
 
-		//another formatter for pVal
+		// another formatter for pVal
 		NumberFormat format2 = NumberFormat.getInstance();
 		NumberFormatter formatter2 = new NumberFormatter(format);
 		formatter.setValueClass(Number.class);
 		formatter.setMinimum(0);
 		formatter.setMaximum(Double.MAX_VALUE);
-		
+
 		// initialize settings components
 		inputDataFileSelector = new JButton("Select Input File");
 		geneSetFileSelector = new JButton("Select Gene Set");
@@ -508,9 +541,10 @@ public class GUI {
 		// qp not enabled originally
 		quickPermEnabled.setEnabled(false);
 
-		outputscroll = new JScrollPane(output,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		outputscroll = new JScrollPane(output, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		outputscroll.setPreferredSize(new Dimension(500, 315));
-		
+
 		// set preferred dimension size
 		minGeneSetSize.setPreferredSize(new Dimension(100, 25));
 		maxGeneSetSize.setPreferredSize(new Dimension(100, 25));
@@ -566,16 +600,6 @@ public class GUI {
 
 		// initialize file selector
 		fc = new JFileChooser();
-
-		// Java FX, create the cytoscape panel with the given html
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-
-				initFX(cytoscapePanel);
-
-			}
-		});
 
 	}
 
@@ -778,34 +802,9 @@ public class GUI {
 		// add to tabbed pane
 		// tabbedPane.add("Configure", settingsPanel);
 		tabbedPane.add("Configure", scrollPane);
-		tabbedPane.add("Result", cytoscapePanel);
 
 		// add to main frame
 		frame.add(tabbedPane);
-	}
-
-	private void initFX(JFXPanel fxPanel) {
-		// This method is invoked on the JavaFX thread, create the scene to hold
-		// all of the elements
-		Scene scene = createScene();
-		fxPanel.setScene(scene);
-
-	}
-
-	private Scene createScene() {
-		Group root = new Group();
-		Scene scene = new Scene(root);
-
-		// Webview used to display JS
-		WebView browser = new WebView();
-		WebEngine webEngine = browser.getEngine();
-		URL myURL = GUI.class.getResource("index.html"); // the source file is
-															// set from within
-															// the GUI class
-		webEngine.load(myURL.toExternalForm());
-		root.getChildren().add(browser);
-
-		return (scene);
 	}
 
 	public void show() {
@@ -814,7 +813,7 @@ public class GUI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("EDDY: Evaluation of Differential DependencY");
 		frame.setLocationRelativeTo(null);
-		
+
 		// hide advanced parameters by default
 		edf.setVisible(false);
 		minGeneSetSize.setVisible(false);
@@ -850,5 +849,28 @@ public class GUI {
 
 		frame.setVisible(true);
 
+	}
+
+	private static void initFX(JFXPanel fxPanel) {
+		// This method is invoked on the JavaFX thread, create the scene to hold
+		// all of the elements
+		Scene scene = createScene();
+		fxPanel.setScene(scene);
+	}
+
+	private static Scene createScene() {
+		Group root = new Group();
+		Scene scene = new Scene(root, 1000, 1000);
+
+		// Webview used to display JS
+		WebView browser = new WebView();
+		WebEngine webEngine = browser.getEngine();
+		// String myURL = "file:///"+index.getAbsolutePath(); //the source file
+		// is set from witin the CytoscapeSwing class
+		webEngine.load("file:///" + new File("index6.html").getAbsolutePath());
+
+		root.getChildren().add(browser);
+
+		return (scene);
 	}
 }

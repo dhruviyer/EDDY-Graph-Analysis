@@ -1,0 +1,14 @@
+EDDY OUTPUT FILE
+Data File: TCGA_GBM_mRNA_discrete_HGNC.txt
+Target Gene Set(s) File: c2.cp.v4.0.symbols.gmt.v1.txt
+Class Label File: Proneural.txt
+Number of Gene Sets: 1
+Number of Threads: 2
+
+-d TCGA_GBM_mRNA_discrete_HGNC.txt -c Proneural.txt -g c2.cp.v4.0.symbols.gmt.v1.txt -r 1 -p 0.99999
+
+Name: 	Collection: 	Size: 	URL: 	JS Divergence: 	P-Value: 	#Permutations: 	Genes: 
+ZIOCARTA_NEUROTRANSMITTERS_PATHWAY	c2.cp.v4.0.symbols.gmt.v1.txt	6	http://www.broadinstitute.org/gsea/msigdb/cards/BIOCARTA_NEUROTRANSMITTERS_PATHWAY	0.39795528121282014	0.0	1.0	GAD1	TH	HDC	DBH	PNMT	TPH1
+KEGG_ADENINE_RIBONUCLEOTIDE_BIOSYNTHESIS_PATHWAY	CRYPTO_pathways_processed.gmt.txt	8	http://www.genome.jp/dbget-bin/www_bget?md:cgi_M00049	0.9905607823761226	0.096914494335838215	0.0	CGB_C4530W	CGB_C7060C
+
+Elapsed Time:   00 hrs: 00 min: 42 sec

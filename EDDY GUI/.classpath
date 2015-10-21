@@ -2,5 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BayesianNetwork"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Mathematics"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/PathwayActivityProfile"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

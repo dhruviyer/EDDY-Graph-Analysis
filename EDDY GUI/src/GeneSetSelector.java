@@ -19,6 +19,8 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+
 public class GeneSetSelector {
 	JFrame frame;
 	JPanel panel;
@@ -93,11 +95,11 @@ public class GeneSetSelector {
 				if (gsFilePath == null) {
 					int[] selected = geneSubList.getSelectedIndices();
 					try {
-						PrintWriter writer = new PrintWriter("geneset", "UTF-8");
+						PrintWriter writer = new PrintWriter("c2.cp.v4.0.symbols.gmt.myfile.txt", "UTF-8");
 						for (int i : selected) {
 
 							BufferedReader br = new BufferedReader(
-									new FileReader("c2.cp.v4.0.symbols.gmt.ordered.txt"));
+									new FileReader("GENESETS/c2.cp.v4.0.symbols.gmt.txt"));
 							boolean equal = false;
 							String read = "";
 							String comparatorX = "";
@@ -118,13 +120,14 @@ public class GeneSetSelector {
 					try{
 						BufferedReader br = new BufferedReader(
 								new FileReader(gsFilePath));
-						PrintWriter writer = new PrintWriter("geneset", "UTF-8");
+						PrintWriter writer = new PrintWriter("c2.cp.v4.0.symbols.gmt.myfile.txt", "UTF-8");
 						String line = br.readLine();
 						while(line != null){
 							writer.println(line);
 							line = br.readLine();
 						}
 						writer.close();
+						GUI.geneSetFile = gsFilePath;
 					}catch(Exception e2){
 						e2.printStackTrace();
 					}
@@ -179,49 +182,49 @@ public class GeneSetSelector {
 			for (int i = 0; i < selected.length; i++) {
 				switch (selected[i]) {
 				case 0:
-					br = new BufferedReader(new FileReader("BIOCARTA.txt"));
+					br = new BufferedReader(new FileReader("GENESETS/BIOCARTA.txt"));
 					while ((line = br.readLine()) != null) {
 						lowerGeneSet.addElement(line);
 					}
 					break;
 				case 1:
-					br = new BufferedReader(new FileReader("KEGG.txt"));
+					br = new BufferedReader(new FileReader("GENESETS/KEGG.txt"));
 					while ((line = br.readLine()) != null) {
 						lowerGeneSet.addElement(line);
 					}
 					break;
 				case 2:
-					br = new BufferedReader(new FileReader("PID.txt"));
+					br = new BufferedReader(new FileReader("GENESETS/PID.txt"));
 					while ((line = br.readLine()) != null) {
 						lowerGeneSet.addElement(line);
 					}
 					break;
 				case 3:
-					br = new BufferedReader(new FileReader("REACTOME.txt"));
+					br = new BufferedReader(new FileReader("GENESETS/REACTOME.txt"));
 					while ((line = br.readLine()) != null) {
 						lowerGeneSet.addElement(line);
 					}
 					break;
 				case 4:
-					br = new BufferedReader(new FileReader("SA.txt"));
+					br = new BufferedReader(new FileReader("GENESETS/SA.txt"));
 					while ((line = br.readLine()) != null) {
 						lowerGeneSet.addElement(line);
 					}
 					break;
 				case 5:
-					br = new BufferedReader(new FileReader("SIG.txt"));
+					br = new BufferedReader(new FileReader("GENESETS/SIG.txt"));
 					while ((line = br.readLine()) != null) {
 						lowerGeneSet.addElement(line);
 					}
 					break;
 				case 6:
-					br = new BufferedReader(new FileReader("ST.txt"));
+					br = new BufferedReader(new FileReader("GENESETS/ST.txt"));
 					while ((line = br.readLine()) != null) {
 						lowerGeneSet.addElement(line);
 					}
 					break;
 				case 7:
-					br = new BufferedReader(new FileReader("WNT.txt"));
+					br = new BufferedReader(new FileReader("GENESETS/WNT.txt"));
 					while ((line = br.readLine()) != null) {
 						lowerGeneSet.addElement(line);
 					}
