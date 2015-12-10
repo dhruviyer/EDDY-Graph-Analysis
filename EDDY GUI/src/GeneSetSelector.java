@@ -59,10 +59,12 @@ public class GeneSetSelector {
 					int start = 0;
 					int end = geneSubList.getModel().getSize() - 1;
 					if (end >= 0) {
+						
 						geneSubList.setSelectionInterval(start, end);
 					}
 					selectAll.setText("Deselect All");
 				} else {
+				
 					geneSubList.setSelectedIndex(0);
 					selectAll.setText("Select All");
 				}

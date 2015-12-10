@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -8,6 +9,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
@@ -30,6 +32,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
+import eddy.EasyReader;
 import eddy.MyRunEDDY;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -412,11 +415,12 @@ public class GUI {
 
 						@Override
 						public void run() {
-							MyRunEDDY.main(commands);
+							//MyRunEDDY.main(commands);
 							tabbedPane.add("Results", cytoscapePane);
 
 							try {
-								BufferedReader reader = new BufferedReader(new FileReader("eddy.gmt.output.txt"));
+							/*	BufferedReader reader = new BufferedReader(new FileReader("eddy.gmt.output.txt"));
+								EasyReader linksReader = new EasyReader("links.txt");
 								for (int counter = 0; counter < 10; counter++) {
 									reader.readLine();
 								}
@@ -426,28 +430,30 @@ public class GUI {
 										+ "<th>P-Value</th></tr>";
 
 								String line = reader.readLine();
-								String[] inputs;
+								String link = linksReader.readLine();
+								String[] inputs = null;
 								while (!(line.equals(""))) {
 									inputs = line.split("\t");
-									output += "<tr><td>" + inputs[0] + "</td>" + "<td>" + inputs[2] + "</td>" + "<td>"
+									output += "<tr><td><a href=\"file://"+link+"\">"+inputs[0]+"</a>" + "</td>" + "<td>" + inputs[2] + "</td>" + "<td>"
 											+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[4]))
 											+ "</td>" + "<td>"
 											+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[5]))
 											+ "</td></tr>";
 									line = reader.readLine();
+									link = linksReader.readLine();
 
 								}
 								output += "</table></body></html>";
-								PrintWriter writer = new PrintWriter("index6.html", "UTF-8");
-
+								PrintWriter writer = new PrintWriter("index.html", "UTF-8");
 								writer.write(output);
-								writer.close();
-								Platform.runLater(new Runnable() {
+								writer.close();*/
+								/*Platform.runLater(new Runnable() {
 									@Override
 									public void run() {
 										initFX(cytoscapePane);
 									}
-								});
+								});*/
+								Desktop.getDesktop().browse(new File("index.html").toURI());
 								runEDDY.setText("Check Results Tab");
 							} catch (Exception ex) {
 							}
@@ -455,6 +461,7 @@ public class GUI {
 					});
 
 					th.start();
+					
 					runEDDY.setText("Please Wait...");
 
 				} catch (Exception ex) {
@@ -600,7 +607,16 @@ public class GUI {
 
 		// initialize file selector
 		fc = new JFileChooser();
-
+		
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter("links.txt","UTF-8");
+			writer.print("");
+			writer.close();
+		} catch (Exception ec) {
+			// TODO Auto-generated catch block
+			ec.printStackTrace();
+		}
 	}
 
 	public void add() {
@@ -809,7 +825,7 @@ public class GUI {
 
 	public void show() {
 		frame.setSize(settingsFrameWidth, settingsFrameHeight);
-		frame.setResizable(false);
+		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("EDDY: Evaluation of Differential DependencY");
 		frame.setLocationRelativeTo(null);
@@ -867,7 +883,7 @@ public class GUI {
 		WebEngine webEngine = browser.getEngine();
 		// String myURL = "file:///"+index.getAbsolutePath(); //the source file
 		// is set from witin the CytoscapeSwing class
-		webEngine.load("file:///" + new File("index6.html").getAbsolutePath());
+		webEngine.load("file:///" + new File("index.html").getAbsolutePath());
 
 		root.getChildren().add(browser);
 
