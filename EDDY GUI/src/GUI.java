@@ -415,11 +415,11 @@ public class GUI {
 
 						@Override
 						public void run() {
-							//MyRunEDDY.main(commands);
+							MyRunEDDY.main(commands);
 							tabbedPane.add("Results", cytoscapePane);
 
 							try {
-							/*	BufferedReader reader = new BufferedReader(new FileReader("eddy.gmt.output.txt"));
+							    BufferedReader reader = new BufferedReader(new FileReader("eddy.gmt.output.txt"));
 								EasyReader linksReader = new EasyReader("links.txt");
 								for (int counter = 0; counter < 10; counter++) {
 									reader.readLine();
@@ -446,13 +446,14 @@ public class GUI {
 								output += "</table></body></html>";
 								PrintWriter writer = new PrintWriter("index.html", "UTF-8");
 								writer.write(output);
-								writer.close();*/
+								writer.close();
 								/*Platform.runLater(new Runnable() {
 									@Override
 									public void run() {
 										initFX(cytoscapePane);
 									}
 								});*/
+								//switch to output gui
 								Desktop.getDesktop().browse(new File("index.html").toURI());
 								runEDDY.setText("Check Results Tab");
 							} catch (Exception ex) {

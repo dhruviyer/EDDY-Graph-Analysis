@@ -19,13 +19,21 @@ import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 public class OutputWriter {
 	EasyReader networkFileReader;
 	EasyReader outputFileReader;
+	EasyReader inputDataFileReader;
+	EasyReader classDataFileReader;
 	String[] ClassColorMatrix;
 	File geneSetFile;
 	Vector<EDDYNode> genes;
+	String class1MutationDataLink="";
+	String class2MutationDataLink="";
+	String class1NameComparator;
+	GraphAnalysis graphAnalysis;
 	
-	public OutputWriter(String networkFileName, String outputFileName) {
+	public OutputWriter(String networkFileName, String outputFileName, String inputDataFileName, String classDataFileName) {
 		networkFileReader = new EasyReader(networkFileName);
 		outputFileReader = new EasyReader(outputFileName);
+		inputDataFileReader = new EasyReader(inputDataFileName);
+		classDataFileReader = new EasyReader(classDataFileName);
 		
 		ClassColorMatrix = new String[3];
 		ClassColorMatrix[0] = "red";
@@ -39,13 +47,62 @@ public class OutputWriter {
 		geneSetFile = new File(geneSetName); //Make directory to hold all the three files
 		geneSetFile.mkdirs();
 		
+		
 		try{
 			PrintWriter htmlwriter = new PrintWriter(geneSetFile.getAbsolutePath() + "/index.html", "UTF-8");
 			PrintWriter csswriter = new PrintWriter(geneSetFile.getAbsolutePath() + "/style.css", "UTF-8");
 			PrintWriter writer = new PrintWriter(geneSetFile.getAbsolutePath() + "/gcode.js","UTF-8");
 			
-			String class1name = outputFileReader.readLine();
-			String class2name = outputFileReader.readLine();
+			String class1name = "";
+			String class2name = "";
+			String sampleClass0Name = outputFileReader.readLine();
+			String sampleClass1Name = outputFileReader.readLine();
+			
+			for(int i = 0; i< sampleClass0Name.length();i++){
+				if(Character.isLetter(sampleClass0Name.charAt(i))){
+					class1name += Character.toLowerCase(sampleClass0Name.charAt(i));
+				}
+			}
+			
+			for(int i = 0; i< sampleClass1Name.length();i++){
+				if(Character.isLetter(sampleClass1Name.charAt(i))){
+					class2name += Character.toLowerCase(sampleClass1Name.charAt(i));
+				}
+			}
+			
+			inputDataFileReader.readWord(); //discard first word
+			String tempMyClass = classDataFileReader.readWord();
+			while(tempMyClass!=null){
+				String tempFileID = inputDataFileReader.readWord();
+				if(tempMyClass.equals(sampleClass0Name)){
+					int iterator = 0;
+					while(tempFileID.charAt(iterator)!='-'){
+						class1MutationDataLink+=tempFileID.charAt(iterator);
+						iterator++;
+					}
+					class1MutationDataLink+=tempFileID.charAt(iterator);
+					iterator++;
+					for(int i = iterator; i<iterator+10;i++)
+						class1MutationDataLink+=tempFileID.charAt(i);
+					class1MutationDataLink+="%20";
+				}else{
+					int iterator = 0;
+					while(tempFileID.charAt(iterator)!='-'){
+						class2MutationDataLink+=tempFileID.charAt(iterator);
+						iterator++;
+					}
+					class2MutationDataLink+=tempFileID.charAt(iterator);
+					iterator++;
+					for(int i = iterator; i<iterator+10;i++)
+						class2MutationDataLink+=tempFileID.charAt(i);
+					class2MutationDataLink+="%20";
+				}
+				
+				tempMyClass = classDataFileReader.readWord();
+			}
+			System.out.println(class1MutationDataLink);
+			System.out.println(class2MutationDataLink);
+			
 			outputFileReader.readLine(); //line after class info has some table headers we don't need
 				// write very long intro to gcode.js
 				writer.println(
@@ -75,6 +132,8 @@ public class OutputWriter {
 					genes.addElement(new EDDYNode(tempInfo[0], Double.parseDouble(tempInfo[1]), Double.parseDouble(tempInfo[2]), Double.parseDouble(tempInfo[3]), Double.parseDouble(tempInfo[4]), Double.parseDouble(tempInfo[5]), Double.parseDouble(tempInfo[6]), Double.parseDouble(tempInfo[7])));
 					line = outputFileReader.readLine();
 				}
+				
+				
 				//split network line into component part: gene 1, gene 2, class, and prior presence/absence
 				String gene1 = networkFileReader.readWord();
 				String gene2 = networkFileReader.readWord();
@@ -457,8 +516,10 @@ public class OutputWriter {
 						+ "').addClass('core'); eledges_" + class2name
 						+ ".removeClass('unhighlighted').addClass('highlighted'); eledges_" + class1name
 						+ ".removeClass('unhighlighted').addClass('highlighted'); } if( opts.fn ){ opts.fn(); } layout = makeLayout( opts.layoutOpts ); layout.run(); }); } cy.edges().forEach(function(n){ var g1 = n.data('source'); var g2 = n.data('target'); n.qtip({ content: [ { name: 'Gene 1 '+ g1 + ' Gene 2 ' + g2 } ].map(function( link ){ return link.name; }).join(''), position: { my: 'top center', at: 'bottom center' }, style: { classes: 'qtip-bootstrap', tip: { width: 16, height: 4 } } }); }); cy.nodes().forEach(function(n){ var g = n.data('name'); n.qtip({ content: [ { \n name: 'GeneCard<br></br>', \n url: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene=' + g }, { \nname: '"
-						+ class1name + " mutation data<br></br>', \nurl: 'http://www.cbioportal.org' }, { \nname: '" + class2name
-						+ " mutation data', \nurl: 'http://www.cbioportal.org' } ].map(function( link ){ return '<a target=\"_blank\" href=\"' + link.url + '\">' + link.name + '</a>'; }).join(''), position: { my: 'top center', at: 'bottom center' }, style: { classes: 'qtip-bootstrap', tip: { width: 16, height: 8 } } }); }); }); // on dom ready \n$(function() { FastClick.attach( document.body ); });");
+						+ class1name + " mutation data<br></br>', \n url: 'http://www.cbioportal.org/index.do?cancer_study_list=gbm_tcga&cancer_study_id=gbm_tcga&genetic_profile_ids_PROFILE_MUTATION_EXTENDED=gbm_tcga_mutations&genetic_profile_ids_PROFILE_COPY_NUMBER_ALTERATION=gbm_tcga_gisticA&Z_SCORE_THRESHOLD=2.0&data_priority=0&case_set_id=-1&case_ids="+class1MutationDataLink+"&gene_set_choice=user-defined-list&gene_list=' + g + '%0D%0A&clinical_param_selection=null&tab_index=tab_visualize&Action=Submit'}"
+								+ ", { \nname: '" + class2name
+						+ " mutation data', \nurl: 'http://www.cbioportal.org/index.do?cancer_study_list=gbm_tcga&cancer_study_id=gbm_tcga&genetic_profile_ids_PROFILE_MUTATION_EXTENDED=gbm_tcga_mutations&genetic_profile_ids_PROFILE_COPY_NUMBER_ALTERATION=gbm_tcga_gisticA&Z_SCORE_THRESHOLD=2.0&data_priority=0&case_set_id=-1&case_ids="+class2MutationDataLink+"&gene_set_choice=user-defined-list&gene_list=' + g + '%0D%0A&clinical_param_selection=null&tab_index=tab_visualize&Action=Submit'}"
+						+ " ].map(function( link ){ return '<a target=\"_blank\" href=\"' + link.url + '\">' + link.name + '</a>'; }).join(''), position: { my: 'top center', at: 'bottom center' }, style: { classes: 'qtip-bootstrap', tip: { width: 16, height: 8 } } }); }); }); // on dom ready \n$(function() { FastClick.attach( document.body ); });");
 				
 				writer.close();
 		}catch(Exception e){
