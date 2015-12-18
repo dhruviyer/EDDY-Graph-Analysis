@@ -129,7 +129,7 @@ public class GeneSetSelector {
 							line = br.readLine();
 						}
 						writer.close();
-						GUI.geneSetFile = gsFilePath;
+						FullEDDYGUI.geneSetFile = gsFilePath;
 					}catch(Exception e2){
 						e2.printStackTrace();
 					}

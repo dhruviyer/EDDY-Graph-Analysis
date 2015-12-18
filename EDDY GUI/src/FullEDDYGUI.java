@@ -49,7 +49,7 @@ import javafx.scene.web.WebView;
  *
  */
 
-public class GUI {
+public class FullEDDYGUI {
 
 	// arguments to EDDY
 	static JButton inputDataFileSelector;
@@ -98,7 +98,6 @@ public class GUI {
 
 	// various panes and containers
 	static JPanel settingsPanel;
-	static JFXPanel cytoscapePane;
 	static JPanel resultsPane;
 	static JScrollPane scrollPane;
 	static JScrollPane resultsScrollPane;
@@ -135,7 +134,7 @@ public class GUI {
 	// file selector
 	static JFileChooser fc;
 
-	public GUI() {
+	public FullEDDYGUI() {
 		// eddyPathSelector();
 		init(); // initialize elements
 		add(); // add elements to panels and frames
@@ -320,9 +319,7 @@ public class GUI {
 
 			}
 		});
-
 		
-
 		resetFields.addActionListener(new ActionListener() {
 
 			@Override
@@ -402,60 +399,19 @@ public class GUI {
 
 						@Override
 						public void run() {
-							MyRunEDDY.main(commands);
-							try {
-							    BufferedReader reader = new BufferedReader(new FileReader("eddy.gmt.output.txt"));
-								EasyReader linksReader = new EasyReader("links.txt");
-								for (int counter = 0; counter < 10; counter++) {
-									reader.readLine();
-								}
-								String output = "<!DOCTYPE HTML><html><head><script type=\"text/javascript\" src=\"sorttable.js\"></script></head><body>";
-								output += "<table class=\"sortable\" border=\"1\" cellpadding=\"15\">" + "<tr>"
-										+ "<th>Name</th>" + "<th>Size</th>" + "<th>JS Divergence</th>"
-										+ "<th>P-Value</th></tr>";
-								
-
-								String line = reader.readLine();
-								String link = linksReader.readLine();
-								String[] inputs = null;
-								while (!(line.equals(""))) {
-									inputs = line.split("\t");
-									output += "<tr><td>"+inputs[0]+"</td>" + "<td>" + inputs[2] + "</td>" + "<td>"
-											+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[4]))
-											+ "</td>" + "<td>"
-											+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[5]))
-											+ "</td></tr>";
-									line = reader.readLine();
-									link = linksReader.readLine();
-
-								}
-								output += "</table></body></html>";
-								PrintWriter writer = new PrintWriter("index.html", "UTF-8");
-								writer.write(output);
-								writer.close();
-								Platform.runLater(new Runnable() {
-									@Override
-									public void run() {
-										initFX(cytoscapePane);
-									}
-								});
-								new OutputWriter(inputs[0]+"_EdgeList.txt", inputs[0]+"_NODEINFO.txt", inputFile, classInfoFile);
-								runEDDY.setText("Done!");
-								
-							} catch (Exception ex) {
-							}
+							//MyRunEDDY.main(commands);
+							
+							frame.dispose();
+							new SummaryTableGenerator().makeTable(inputFile,classInfoFile);
+							runEDDY.setText("Done!");
 						}
 					});
-
 					th.start();
-					
 					runEDDY.setText("Please Wait...");
-
-				} catch (Exception ex) {
-					ex.printStackTrace();
-
+						
+				}catch(Exception excep){
+					excep.printStackTrace();
 				}
-				
 			}
 		});
 	}
@@ -476,7 +432,6 @@ public class GUI {
 		settingsPanel.setPreferredSize(new Dimension(1000, 550));
 		settingsPanel.setLayout(sp);
 
-		cytoscapePane = new JFXPanel();
 		/*
 		 * resultsScrollPane = new JScrollPane(cytoscapePane);
 		 * resultsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.
@@ -594,10 +549,10 @@ public class GUI {
 
 		// initialize file selector
 		fc = new JFileChooser();
-		
+
 		PrintWriter writer;
 		try {
-			writer = new PrintWriter("links.txt","UTF-8");
+			writer = new PrintWriter("links.txt", "UTF-8");
 			writer.print("");
 			writer.close();
 		} catch (Exception ec) {
@@ -804,7 +759,6 @@ public class GUI {
 
 		// add to tabbed pane
 
-
 		// add to main frame
 		frame.add(settingsPanel);
 	}
@@ -849,31 +803,9 @@ public class GUI {
 		lbl17.setVisible(false);
 		resetFields.setVisible(false);
 
-		JOptionPane.showMessageDialog(null, "The following wizard will \nguide you to input your files and \nrun EDDY in full.");
+		JOptionPane.showMessageDialog(null,
+				"The following wizard will \nguide you to input your files and \nrun EDDY in full.");
 		frame.setVisible(true);
 
-	}
-
-	private static void initFX(JFXPanel fxPanel) {
-		// This method is invoked on the JavaFX thread, create the scene to hold
-		// all of the elements
-		Scene scene = createScene();
-		fxPanel.setScene(scene);
-	}
-
-	private static Scene createScene() {
-		Group root = new Group();
-		Scene scene = new Scene(root, 1000, 1000);
-
-		// Webview used to display JS
-		WebView browser = new WebView();
-		WebEngine webEngine = browser.getEngine();
-		// String myURL = "file:///"+index.getAbsolutePath(); //the source file
-		// is set from witin the CytoscapeSwing class
-		webEngine.load("file:///" + new File("index.html").getAbsolutePath());
-
-		root.getChildren().add(browser);
-
-		return (scene);
 	}
 }

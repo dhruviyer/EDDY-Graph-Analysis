@@ -38,7 +38,7 @@ public class Main {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				frame.dispose();
-				GUI gui = new GUI();
+				FullEDDYGUI gui = new FullEDDYGUI();
 				
 			}
 		});
@@ -48,7 +48,7 @@ public class Main {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
-				new FilesFromOutput();
+				new FilesFromOutputGUI();
 			}
 		});
 
