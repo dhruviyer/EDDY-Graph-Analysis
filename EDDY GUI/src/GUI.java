@@ -97,7 +97,6 @@ public class GUI {
 	static JLabel lbl18;
 
 	// various panes and containers
-	static JTabbedPane tabbedPane;
 	static JPanel settingsPanel;
 	static JFXPanel cytoscapePane;
 	static JPanel resultsPane;
@@ -282,7 +281,7 @@ public class GUI {
 					lbl17.setVisible(false);
 
 				} else {
-					settingsFrameHeight = 550;
+					settingsFrameHeight = 560;
 					settingsFrameWidth = 1025;
 					frame.setSize(settingsFrameWidth, settingsFrameHeight);
 
@@ -322,19 +321,7 @@ public class GUI {
 			}
 		});
 
-		tabbedPane.addChangeListener(new ChangeListener() {
-
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				if (tabbedPane.getSelectedIndex() == 1) {
-					frame.setSize(800, 600);
-					runEDDY.setText("Run EDDY");
-				} else {
-					frame.setSize(settingsFrameWidth, settingsFrameHeight);
-				}
-
-			}
-		});
+		
 
 		resetFields.addActionListener(new ActionListener() {
 
@@ -416,8 +403,6 @@ public class GUI {
 						@Override
 						public void run() {
 							MyRunEDDY.main(commands);
-							tabbedPane.add("Summary", cytoscapePane);
-							tabbedPane.add("Analysis", resultsPane);
 							try {
 							    BufferedReader reader = new BufferedReader(new FileReader("eddy.gmt.output.txt"));
 								EasyReader linksReader = new EasyReader("links.txt");
@@ -483,7 +468,6 @@ public class GUI {
 		sp = new SpringLayout();
 
 		// initialize holding panels
-		tabbedPane = new JTabbedPane();
 		settingsPanel = new JPanel();
 		resultsPane = new JPanel();
 		scrollPane = new JScrollPane(settingsPanel);
@@ -819,11 +803,10 @@ public class GUI {
 		sp.putConstraint(SpringLayout.NORTH, outputscroll, 217, SpringLayout.NORTH, settingsPanel);
 
 		// add to tabbed pane
-		// tabbedPane.add("Configure", settingsPanel);
-		tabbedPane.add("Configure", scrollPane);
+
 
 		// add to main frame
-		frame.add(tabbedPane);
+		frame.add(settingsPanel);
 	}
 
 	public void show() {
