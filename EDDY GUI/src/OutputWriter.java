@@ -27,7 +27,7 @@ public class OutputWriter {
 	String class1MutationDataLink="";
 	String class2MutationDataLink="";
 	String class1NameComparator;
-	GraphAnalysis graphAnalysis;
+	GraphBetweenessAnalysis graphAnalysis;
 	
 	public OutputWriter(String networkFileName, String outputFileName, String inputDataFileName, String classDataFileName) {
 		networkFileReader = new EasyReader(networkFileName);
@@ -132,7 +132,7 @@ public class OutputWriter {
 					genes.addElement(new EDDYNode(tempInfo[0], Double.parseDouble(tempInfo[1]), Double.parseDouble(tempInfo[2]), Double.parseDouble(tempInfo[3]), Double.parseDouble(tempInfo[4]), Double.parseDouble(tempInfo[5]), Double.parseDouble(tempInfo[6]), Double.parseDouble(tempInfo[7])));
 					line = outputFileReader.readLine();
 				}
-				
+				graphAnalysis = new GraphBetweenessAnalysis(genes);
 				
 				//split network line into component part: gene 1, gene 2, class, and prior presence/absence
 				String gene1 = networkFileReader.readWord();
@@ -187,8 +187,8 @@ public class OutputWriter {
 
 				//write out html head
 				htmlwriter
-						.write("<!DOCTYPE html>  <html>    <head>      <meta charset=utf-8 />            <title>EDDY in Cola.js/Cytoscape.js</title>            <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css\">      <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css\">      <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/4.10.3/css/bootstrap-slider.min.css\">      <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css\">      <link href=\"http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css\" rel=\"stylesheet\" type=\"text/css\" />      <link href=\"style.css\" rel=\"stylesheet\" />            <script src=\"https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js\"></script>      <script src=\"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.0/lodash.min.js\"></script>      <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js\"></script>      <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js\"></script>      <script src=\"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/4.10.3/bootstrap-slider.min.js\"></script>      <!--<script src=\"https://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cola.v3.min.js\"></script>-->      <script src=\"http://marvl.infotech.monash.edu/webcola/cola.v3.min.js\"></script>      <script src=\"http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js\"></script>      <script src=\"http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.js\"></script>      <script src=\"https://cdn.rawgit.com/cytoscape/cytoscape.js-qtip/2.2.5/cytoscape-qtip.js\"></script>      <script src=\"https://cdn.rawgit.com/cytoscape/cytoscape.js-cola/1.1.1/cytoscape-cola.js\"></script>    ​            <script src=\"gcode.js\"></script>    </head>    <body>      <div id=\"cy\"></div>            <div id=\"config\">        <div class=\"preamble\">  <span><a href="
-								+ geneSetURL + ">" + geneSetName+ "<hr>");
+						.write("<!DOCTYPE html>  <html>    <head>      <meta charset=utf-8 />            <title>EDDY in Cola.js/Cytoscape.js</title>            <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css\">      <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css\">      <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/4.10.3/css/bootstrap-slider.min.css\">      <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css\">      <link href=\"http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css\" rel=\"stylesheet\" type=\"text/css\" />      <link href=\"style.css\" rel=\"stylesheet\" />            <script src=\"https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js\"></script>      <script src=\"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.0/lodash.min.js\"></script>      <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js\"></script>      <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js\"></script>      <script src=\"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/4.10.3/bootstrap-slider.min.js\"></script>      <!--<script src=\"https://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cola.v3.min.js\"></script>-->      <script src=\"http://marvl.infotech.monash.edu/webcola/cola.v3.min.js\"></script>      <script src=\"http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js\"></script>      <script src=\"http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.js\"></script>      <script src=\"https://cdn.rawgit.com/cytoscape/cytoscape.js-qtip/2.2.5/cytoscape-qtip.js\"></script>      <script src=\"https://cdn.rawgit.com/cytoscape/cytoscape.js-cola/1.1.1/cytoscape-cola.js\"></script>    ​            <script src=\"gcode.js\"></script>    </head>    <body>      <div id=\"cy\"></div>            <div id=\"config\">        <div class=\"preamble\">  <span><a href=\""
+								+ geneSetURL + "\">" + geneSetName+ "</a><hr>");
 				htmlwriter.write(
 						"<div id=condition1 style=\"color:" + ClassColorMatrix[0] + "; background-color: white\">");
 				htmlwriter.write("<p>" + class1name + "</p>");
@@ -207,16 +207,54 @@ public class OutputWriter {
 				linksWriter.append(geneSetFile.getAbsolutePath() + "/index.html" + "\n");
 				linksWriter.close();
 				
+				//iterate through network file and add all the edges
+				//restart reading of network file at line 1
+				networkFileReader = new EasyReader(networkFileName);
+				
+				line = networkFileReader.readLine();
+				tempInfo = line.split("\t");
+				gene1 = tempInfo[0];
+				gene2 = tempInfo[1];
+				classType = tempInfo[2];
+				
+				if(classType.equalsIgnoreCase(class1name)){
+					graphAnalysis.addEdge(gene1, gene2, 1);
+				}else if(classType.equalsIgnoreCase(class2name)){
+					graphAnalysis.addEdge(gene1, gene2, 2);
+				}else if(classType.equalsIgnoreCase("both")){
+					graphAnalysis.addEdge(gene1, gene2, 3);
+				}
+				
+				//repeat for rest of the genes
+				line = networkFileReader.readLine();
+				while(line!=null && !line.equals(""))	{
+					tempInfo = line.split("\t");
+					gene1 = tempInfo[0];
+					gene2 = tempInfo[1];
+					classType = tempInfo[2];
+					
+					if(classType.equalsIgnoreCase(class1name)){
+						graphAnalysis.addEdge(gene1, gene2, 1);
+					}else if(classType.equalsIgnoreCase(class2name)){
+						graphAnalysis.addEdge(gene1, gene2, 2);
+					}else if(classType.equalsIgnoreCase("both")){
+						graphAnalysis.addEdge(gene1, gene2, 3);
+					}
+					
+					line = networkFileReader.readLine();
+				}
+				graphAnalysis.betweenessCentrality();
+				
 				int temp = 1;
 				//write out node info
 				for(EDDYNode node:genes){
 					if(temp==1){
 						writer.println("{\"data\":{ \"id\": \"" + node.name
 								+ "\",\"idInt\":0, \"name\":\"" + node.name + "\",\"btwn\":"
-								+ "0.000" + ",\"btwn_"
-								+ class1name + "\":" + "0.000"
+								+ graphAnalysis.getNodeBtwBothClasses(node.name)+ ",\"btwn_"
+								+ class1name + "\":" + graphAnalysis.getNodeBtwClass1(node.name)
 								+ ",\"btwn_" + class2name + "\":"
-								+ "0.000"
+								+ graphAnalysis.getNodeBtwClass2(node.name)
 								+ ",\"query\":true,\"gene\":true,\"nodeEdgeColor\":\"" + node.nodeEdgeColor
 								+ "\",\"ratio\":" + node.ratio + ",\"exprone_" + class1name + "\":" + node.expr1c1
 								+ ",\"exprzero_" + class1name + "\":" + node.expr0c1 + ",\"exprnegone_"
@@ -227,10 +265,10 @@ public class OutputWriter {
 					}else{
 						writer.println(",{\"data\":{ \"id\": \"" + node.name
 								+ "\",\"idInt\":0, \"name\":\"" + node.name + "\",\"btwn\":"
-								+ "0.000" + ",\"btwn_"
-								+ class1name + "\":" + "0.000"
+								+ graphAnalysis.getNodeBtwBothClasses(node.name) + ",\"btwn_"
+								+ class1name + "\":" + graphAnalysis.getNodeBtwClass1(node.name)
 								+ ",\"btwn_" + class2name + "\":"
-								+ "0.000"
+								+ graphAnalysis.getNodeBtwClass1(node.name)
 								+ ",\"query\":true,\"gene\":true,\"nodeEdgeColor\":\"" + node.nodeEdgeColor
 								+ "\",\"ratio\":" + node.ratio + ",\"exprone_" + class1name + "\":" + node.expr1c1
 								+ ",\"exprzero_" + class1name + "\":" + node.expr0c1 + ",\"exprnegone_"

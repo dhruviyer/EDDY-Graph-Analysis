@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -9,7 +8,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
@@ -22,6 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -101,6 +100,7 @@ public class GUI {
 	static JTabbedPane tabbedPane;
 	static JPanel settingsPanel;
 	static JFXPanel cytoscapePane;
+	static JPanel resultsPane;
 	static JScrollPane scrollPane;
 	static JScrollPane resultsScrollPane;
 	static JFrame frame;
@@ -416,8 +416,8 @@ public class GUI {
 						@Override
 						public void run() {
 							MyRunEDDY.main(commands);
-							tabbedPane.add("Results", cytoscapePane);
-
+							tabbedPane.add("Summary", cytoscapePane);
+							tabbedPane.add("Analysis", resultsPane);
 							try {
 							    BufferedReader reader = new BufferedReader(new FileReader("eddy.gmt.output.txt"));
 								EasyReader linksReader = new EasyReader("links.txt");
@@ -428,13 +428,14 @@ public class GUI {
 								output += "<table class=\"sortable\" border=\"1\" cellpadding=\"15\">" + "<tr>"
 										+ "<th>Name</th>" + "<th>Size</th>" + "<th>JS Divergence</th>"
 										+ "<th>P-Value</th></tr>";
+								
 
 								String line = reader.readLine();
 								String link = linksReader.readLine();
 								String[] inputs = null;
 								while (!(line.equals(""))) {
 									inputs = line.split("\t");
-									output += "<tr><td><a href=\"file://"+link+"\">"+inputs[0]+"</a>" + "</td>" + "<td>" + inputs[2] + "</td>" + "<td>"
+									output += "<tr><td>"+inputs[0]+"</td>" + "<td>" + inputs[2] + "</td>" + "<td>"
 											+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[4]))
 											+ "</td>" + "<td>"
 											+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[5]))
@@ -447,15 +448,15 @@ public class GUI {
 								PrintWriter writer = new PrintWriter("index.html", "UTF-8");
 								writer.write(output);
 								writer.close();
-								/*Platform.runLater(new Runnable() {
+								Platform.runLater(new Runnable() {
 									@Override
 									public void run() {
 										initFX(cytoscapePane);
 									}
-								});*/
-								//switch to output gui
-								Desktop.getDesktop().browse(new File("index.html").toURI());
-								runEDDY.setText("Check Results Tab");
+								});
+								new OutputWriter(inputs[0]+"_EdgeList.txt", inputs[0]+"_NODEINFO.txt", inputFile, classInfoFile);
+								runEDDY.setText("Done!");
+								
 							} catch (Exception ex) {
 							}
 						}
@@ -484,6 +485,7 @@ public class GUI {
 		// initialize holding panels
 		tabbedPane = new JTabbedPane();
 		settingsPanel = new JPanel();
+		resultsPane = new JPanel();
 		scrollPane = new JScrollPane(settingsPanel);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -864,6 +866,7 @@ public class GUI {
 		lbl17.setVisible(false);
 		resetFields.setVisible(false);
 
+		JOptionPane.showMessageDialog(null, "The following wizard will \nguide you to input your files and \nrun EDDY in full.");
 		frame.setVisible(true);
 
 	}
