@@ -399,7 +399,7 @@ public class FullEDDYGUI {
 
 						@Override
 						public void run() {
-							//MyRunEDDY.main(commands);
+							MyRunEDDY.main(commands);
 							
 							frame.dispose();
 							new SummaryTableGenerator().makeTable(inputFile,classInfoFile);
@@ -766,7 +766,7 @@ public class FullEDDYGUI {
 	public void show() {
 		frame.setSize(settingsFrameWidth, settingsFrameHeight);
 		frame.setResizable(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setTitle("EDDY: Evaluation of Differential DependencY");
 		frame.setLocationRelativeTo(null);
 

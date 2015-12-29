@@ -95,7 +95,8 @@ public class FilesFromOutputGUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(numInputs >= 4){
-					opw = new OutputWriter(eList, nFile, iData, cFile);
+					new SummaryTableGenerator().makeTable(eList, nFile, iData, cFile);
+					frame.dispose();
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "ERROR: YOU ARE MISSING ONE OR MORE INPUTS");
@@ -116,7 +117,7 @@ public class FilesFromOutputGUI {
 		panel.add(advance);
 
 		frame.add(panel);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setSize(300, 300);
 		frame.setLocationRelativeTo(null);
 		JOptionPane.showMessageDialog(null, "The following wizard will \nguide you to enter your output \nfiles for post-processing.");

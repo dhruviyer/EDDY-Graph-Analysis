@@ -5,8 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/BayesianNetwork"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Mathematics"/>
 	<classpathentry kind="lib" path="/Users/diyer/Desktop/jsoup-1.8.3.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Desktop/jung2-2_0_1/collections-generic-4.01.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Desktop/jung2-2_0_1/colt-1.2.0.jar"/>
 	<classpathentry kind="lib" path="/Users/diyer/Desktop/jung2-2_0_1/concurrent-1.3.4.jar"/>
 	<classpathentry kind="lib" path="/Users/diyer/Desktop/jung2-2_0_1/j3d-core-1.3.1.jar"/>
 	<classpathentry kind="lib" path="/Users/diyer/Desktop/jung2-2_0_1/jung-3d-2.0.1.jar"/>
@@ -22,16 +20,6 @@
 	<classpathentry kind="lib" path="/Users/diyer/Desktop/jung2-2_0_1/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="/Users/diyer/Desktop/jung2-2_0_1/vecmath-1.3.1.jar"/>
 	<classpathentry kind="lib" path="/Users/diyer/Desktop/jung2-2_0_1/wstx-asl-3.2.6.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/jcommon-1.0.23.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/jfreechart-1.0.19-experimental.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/jfreechart-1.0.19-swt.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/jfreechart-1.0.19.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/jfreesvg-2.0.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/junit-4.11.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/orsoncharts-1.4-eval-nofx.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/orsonpdf-1.6-eval.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/servlet.jar"/>
-	<classpathentry kind="lib" path="/Users/diyer/Downloads/jfreechart-1.0.19/lib/swtgraphics2d.jar"/>
+	<classpathentry kind="lib" path="/Users/diyer/Desktop/xchart-2.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

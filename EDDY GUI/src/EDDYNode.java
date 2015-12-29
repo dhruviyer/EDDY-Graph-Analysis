@@ -11,11 +11,13 @@ public class EDDYNode {
 	int edgesc1;
 	int edgesc2;
 	String nodeEdgeColor;
-	public EDDYNode(String name){
+
+	public EDDYNode(String name) {
 		this.name = name;
 	}
-	
-	public EDDYNode(String name, double ratio, double expr1c1, double expr0c1, double exprneg1c1, double expr1c2, double expr0c2, double exprneg1c2){
+
+	public EDDYNode(String name, double ratio, double expr1c1, double expr0c1, double exprneg1c1, double expr1c2,
+			double expr0c2, double exprneg1c2) {
 		this.name = name;
 		this.expr1c1 = expr1c1;
 		this.expr0c1 = expr0c1;

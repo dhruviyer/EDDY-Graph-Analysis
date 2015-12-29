@@ -1,20 +1,8 @@
-import java.awt.List;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
-import eddy.BetweenessNode;
 import eddy.EasyReader;
-import eddy.EasyWriter;
-import edu.uci.ics.jung.algorithms.importance.BetweennessCentrality;
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 
 public class OutputWriter {
 	EasyReader networkFileReader;
@@ -28,6 +16,8 @@ public class OutputWriter {
 	String class2MutationDataLink="";
 	String class1NameComparator;
 	GraphBetweenessAnalysis graphAnalysis;
+	String class1name = "";
+	String class2name = "";
 	
 	public OutputWriter(String networkFileName, String outputFileName, String inputDataFileName, String classDataFileName) {
 		networkFileReader = new EasyReader(networkFileName);
@@ -52,9 +42,7 @@ public class OutputWriter {
 			PrintWriter htmlwriter = new PrintWriter(geneSetFile.getAbsolutePath() + "/index.html", "UTF-8");
 			PrintWriter csswriter = new PrintWriter(geneSetFile.getAbsolutePath() + "/style.css", "UTF-8");
 			PrintWriter writer = new PrintWriter(geneSetFile.getAbsolutePath() + "/gcode.js","UTF-8");
-			
-			String class1name = "";
-			String class2name = "";
+		
 			String sampleClass0Name = outputFileReader.readLine();
 			String sampleClass1Name = outputFileReader.readLine();
 			
@@ -141,36 +129,37 @@ public class OutputWriter {
 				networkFileReader.readLine();
 				
 				//go through each gene to see if it is one of the two in the network
-				for(EDDYNode node:genes){
-					if (node.name.equals(gene1)||node.name.equals(gene2)){
+				
+				for(int i = 0; i<genes.size();i++){
+					if (genes.get(i).name.equals(gene1)||genes.get(i).name.equals(gene2)){
 						if(classType.equalsIgnoreCase(class1name)){ //if yes update its edge count with the appropriate info
-							node.edgesc1++;
+							genes.get(i).edgesc1++;
 						}else if(classType.equalsIgnoreCase(class2name)){
-							node.edgesc2++;
+							genes.get(i).edgesc2++;
 						}else if(classType.equalsIgnoreCase("both")){
-							node.edgesc1++;
-							node.edgesc2++;
+							genes.get(i).edgesc1++;
+							genes.get(i).edgesc2++;
 						}
 					}
 				}
-				
-				while((gene1 = networkFileReader.readWord())!=null && !(gene1 = networkFileReader.readWord()).equals("")){
-					gene1 = networkFileReader.readWord();
+				gene1 = networkFileReader.readWord();
+				while(gene1 !=null && !(gene1.equals(""))){
 					gene2 = networkFileReader.readWord();
 					classType = networkFileReader.readWord();
 					networkFileReader.readLine();
-					for(EDDYNode node:genes){
-						if (node.name.equals(gene1)||node.name.equals(gene2)){
-							if(classType.equalsIgnoreCase(class1name)){
-								node.edgesc1++;
+					for(int i = 0; i<genes.size();i++){
+						if (genes.get(i).name.equals(gene1)||genes.get(i).name.equals(gene2)){
+							if(classType.equalsIgnoreCase(class1name)){ //if yes update its edge count with the appropriate info
+								genes.get(i).edgesc1++;
 							}else if(classType.equalsIgnoreCase(class2name)){
-								node.edgesc2++;
+								genes.get(i).edgesc2++;
 							}else if(classType.equalsIgnoreCase("both")){
-								node.edgesc1++;
-								node.edgesc2++;
+								genes.get(i).edgesc1++;
+								genes.get(i).edgesc2++;
 							}
 						}
 					}
+					gene1 = networkFileReader.readWord();
 				}
 				
 				//once all edges have been put in for every gene, figure out which one is greater to use in ratio calcs. NOTE: Ratio is calculated in EDDY, but correct color is not known
@@ -316,6 +305,7 @@ public class OutputWriter {
 									+ "\",\"edgeType\": \""+edgeType+"\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
 									+ gene1 + gene2
 									+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
+				
 				//repeat for rest of the genes
 				line = networkFileReader.readLine();
 				while(line!=null && !line.equals(""))	{
@@ -351,182 +341,7 @@ public class OutputWriter {
 					
 					line = networkFileReader.readLine();
 				}
-				/*
-				for (int i = 0; i < targetGeneSetVariable.size() - 1; i++) {
-					for (int j = i + 1; j < targetGeneSetVariable.size(); j++) {
-						priorIndex1 = targetGeneSetVariable.priorIndexOf(targetGeneSetVariable.get(i).name.toString());
-						priorIndex2 = targetGeneSetVariable.priorIndexOf(targetGeneSetVariable.get(j).name.toString());
-						int priorval = priorMap.map[priorIndex1][priorIndex2];
-						int priorval2 = priorMap.map[priorIndex2][priorIndex1];
-						int net0val = original.structureMap.map[i][j];
-						if ((priorval == 0) && (priorval2 == 0)) {
-							if ((connectionProbability[0][i][j] >= connProbThreshold)
-									&& (connectionProbability[1][i][j] < connProbThreshold)) {
-								writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(i).name
-										+ "\",\"target\":\"" + targetGeneSetVariable.get(j).name
-										+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[0]
-										+ "\",\"edgeType\": \"dashed\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-										+ targetGeneSetVariable.get(i).name + targetGeneSetVariable.get(j).name
-										+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-							} else if ((connectionProbability[0][i][j] < connProbThreshold)
-									&& (connectionProbability[1][i][j] >= connProbThreshold)) {
-
-								writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(i).name
-										+ "\",\"target\":\"" + targetGeneSetVariable.get(j).name
-										+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[1]
-										+ "\",\"edgeType\": \"dashed\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-										+ targetGeneSetVariable.get(i).name + targetGeneSetVariable.get(j).name
-										+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-							} else if ((connectionProbability[0][i][j] >= connProbThreshold)
-									&& (connectionProbability[1][i][j] >= connProbThreshold)) {
-
-								writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(i).name
-										+ "\",\"target\":\"" + targetGeneSetVariable.get(j).name
-										+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[2]
-										+ "\",\"edgeType\": \"dashed\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-										+ targetGeneSetVariable.get(i).name + targetGeneSetVariable.get(j).name
-										+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-							}
-						} else {
-							if (priorval == 1) {
-								if ((connectionProbability[0][i][j] >= connProbThreshold * (1 - priorWeight))
-										&& (connectionProbability[1][i][j] < connProbThreshold * (1 - priorWeight))) {
-
-									if (priorval == 1) {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[0]
-												+ "\",\"edgeType\": \"solid\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(i).name + targetGeneSetVariable.get(j).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									} else {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[0]
-												+ "\",\"edgeType\": \"dashed\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(i).name + targetGeneSetVariable.get(j).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									}
-									bw.write("\n");
-								} else if ((connectionProbability[0][i][j] < connProbThreshold * (1 - priorWeight))
-										&& (connectionProbability[1][i][j] >= connProbThreshold * (1 - priorWeight))) {
-
-									if (priorval == 1) {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[1]
-												+ "\",\"edgeType\": \"solid\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(i).name + targetGeneSetVariable.get(j).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									} else {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[1]
-												+ "\",\"edgeType\": \"dashed\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(i).name + targetGeneSetVariable.get(j).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									}
-									bw.write("\n");
-								} else if ((connectionProbability[0][i][j] >= connProbThreshold * (1 - priorWeight))
-										&& (connectionProbability[1][i][j] >= connProbThreshold * (1 - priorWeight))) {
-
-									if (priorval == 1) {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[2]
-												+ "\",\"edgeType\": \"solid\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(i).name + targetGeneSetVariable.get(j).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									} else {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[2]
-												+ "\",\"edgeType\": \"dashed\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(i).name + targetGeneSetVariable.get(j).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									}
-
-								} else if (priorval == 1) {
-
-								}
-							}
-							if (priorDirectionality && (priorval2 == 1)) {
-								if ((connectionProbability[0][i][j] >= connProbThreshold * (1 - priorWeight))
-										&& (connectionProbability[1][i][j] < connProbThreshold * (1 - priorWeight))) {
-
-									if (priorval2 == 1) {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[0]
-												+ "\",\"edgeType\": \"solid\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(j).name + targetGeneSetVariable.get(i).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									} else {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[0]
-												+ "\",\"edgeType\": \"dashed\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(j).name + targetGeneSetVariable.get(i).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									}
-
-								} else if ((connectionProbability[0][i][j] < connProbThreshold * (1 - priorWeight))
-										&& (connectionProbability[1][i][j] >= connProbThreshold * (1 - priorWeight))) {
-
-									if (priorval2 == 1) {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[1]
-												+ "\",\"edgeType\": \"solid\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(j).name + targetGeneSetVariable.get(i).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									} else {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[1]
-												+ "\",\"edgeType\": \"dashed\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(j).name + targetGeneSetVariable.get(i).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									}
-									bw.write("\n");
-								} else if ((connectionProbability[0][i][j] >= connProbThreshold * (1 - priorWeight))
-										&& (connectionProbability[1][i][j] >= connProbThreshold * (1 - priorWeight))) {
-
-									if (priorval2 == 1) {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[2]
-												+ "\",\"edgeType\": \"solid\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(j).name + targetGeneSetVariable.get(i).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									} else {
-
-										writer.println(",{\"data\":{\"source\":\"" + targetGeneSetVariable.get(j).name
-												+ "\",\"target\":\"" + targetGeneSetVariable.get(i).name
-												+ "\",\"weight\":0.25,\"edgeColor\": \"" + ClassColorMatrix[2]
-												+ "\",\"edgeType\": \"dashed\" ,\"networkId\":1133,\"networkGroupId\":18,\"intn\":true,\"rIntnId\":4,\"id\":\""
-												+ targetGeneSetVariable.get(j).name + targetGeneSetVariable.get(i).name
-												+ "\"},\"position\":{},\"group\":\"edges\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
-									}
-									bw.write("\n");
-								} else if (priorval2 == 1) {
-
-								}
-							}
-						}
-					}
-				}*/
+				
 				// write rest of gcode
 				writer.println("]});");
 				writer.println("var params = { name: 'cola', nodeSpacing: 10, edgeLengthVal: "
