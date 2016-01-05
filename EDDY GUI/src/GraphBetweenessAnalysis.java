@@ -1,12 +1,9 @@
 
-import java.util.Arrays;
 import java.util.Vector;
 
-import eddy.BetweenessNode;
 import edu.uci.ics.jung.algorithms.importance.BetweennessCentrality;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
-import edu.uci.ics.jung.graph.util.EdgeType;
 
 public class GraphBetweenessAnalysis {
 	

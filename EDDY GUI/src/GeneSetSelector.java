@@ -19,8 +19,6 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-
 public class GeneSetSelector {
 	JFrame frame;
 	JPanel panel;
