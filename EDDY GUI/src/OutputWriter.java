@@ -15,7 +15,7 @@ public class OutputWriter {
 	String class1MutationDataLink="";
 	String class2MutationDataLink="";
 	String class1NameComparator;
-	GraphBetweenessAnalysis graphAnalysis;
+	GraphAnalysis graphAnalysis;
 	String class1name = "";
 	String class2name = "";
 	
@@ -120,7 +120,7 @@ public class OutputWriter {
 					genes.addElement(new EDDYNode(tempInfo[0], Double.parseDouble(tempInfo[1]), Double.parseDouble(tempInfo[2]), Double.parseDouble(tempInfo[3]), Double.parseDouble(tempInfo[4]), Double.parseDouble(tempInfo[5]), Double.parseDouble(tempInfo[6]), Double.parseDouble(tempInfo[7])));
 					line = outputFileReader.readLine();
 				}
-				graphAnalysis = new GraphBetweenessAnalysis(genes);
+				graphAnalysis = new GraphAnalysis(genes);
 				
 				//split network line into component part: gene 1, gene 2, class, and prior presence/absence
 				String gene1 = networkFileReader.readWord();
@@ -233,6 +233,7 @@ public class OutputWriter {
 					line = networkFileReader.readLine();
 				}
 				graphAnalysis.betweenessCentrality();
+				graphAnalysis.closnessCentrality();
 				
 				int temp = 1;
 				//write out node info

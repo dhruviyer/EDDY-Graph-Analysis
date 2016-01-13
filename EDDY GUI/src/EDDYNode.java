@@ -1,5 +1,5 @@
 
-public class EDDYNode {
+public class EDDYNode{
 	String name;
 	double ratio;
 	double expr1c1;

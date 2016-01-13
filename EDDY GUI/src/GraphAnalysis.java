@@ -1,11 +1,15 @@
 
+import java.util.Map;
 import java.util.Vector;
 
+import com.sun.javafx.font.Metrics;
+
 import edu.uci.ics.jung.algorithms.importance.BetweennessCentrality;
+import edu.uci.ics.jung.algorithms.scoring.ClosenessCentrality;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 
-public class GraphBetweenessAnalysis {
+public class GraphAnalysis {
 	
 	Graph<String, String> gClass1;
 	Graph<String, String> gClass2;
@@ -15,7 +19,11 @@ public class GraphBetweenessAnalysis {
 	BetweennessCentrality<String, String> btwClass2;
 	BetweennessCentrality<String, String> btwBothClasses;
 	
-	public GraphBetweenessAnalysis(Vector<EDDYNode> genes) {
+	ClosenessCentrality<String, String> clClass1;
+	ClosenessCentrality<String, String> clClass2;
+	ClosenessCentrality<String, String> clBothClasses;
+	
+	public GraphAnalysis(Vector<EDDYNode> genes) {
 		this.genes = genes;
 		
 		 gClass1 = new UndirectedSparseGraph<>();
@@ -25,7 +33,7 @@ public class GraphBetweenessAnalysis {
 		for (int i = 0; i < genes.size(); i++) {
 			gClass1.addVertex(genes.get(i).name);
 			gClass2.addVertex(genes.get(i).name);
-			gBothClasses.addVertex(genes.get(i).name);
+			gBothClasses.addVertex(genes.get(i).name);	
 		}
 	}
 	
@@ -58,6 +66,24 @@ public class GraphBetweenessAnalysis {
 		btwClass1.evaluate();
 		btwClass2.evaluate();
 		btwBothClasses.evaluate();			
+	}
+	
+	public double clusteringCoefficients1(String vertexName){
+		edu.uci.ics.jung.algorithms.metrics.Metrics metric = new edu.uci.ics.jung.algorithms.metrics.Metrics();
+		Map<String, Double> map1 = metric.clusteringCoefficients(gClass1);
+		return map1.get(vertexName);
+	}
+	
+	public double clusteringCoefficients2(String vertexName){
+		edu.uci.ics.jung.algorithms.metrics.Metrics metric = new edu.uci.ics.jung.algorithms.metrics.Metrics();
+		Map<String, Double> map2 = metric.clusteringCoefficients(gClass2);
+		return map2.get(vertexName);
+	}
+	
+	public void closnessCentrality(){
+		clClass1 = new ClosenessCentrality<>(gClass1);
+		clClass2 = new ClosenessCentrality<>(gClass2);
+		clBothClasses = new ClosenessCentrality<>(gBothClasses);
 	}
 	
 	public double getNodeBtwClass1(String vertexName){
