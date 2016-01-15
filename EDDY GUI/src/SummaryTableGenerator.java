@@ -54,9 +54,15 @@ public class SummaryTableGenerator {
 	JMenu menu;
 	
 	OutputWriter ow;
-
+	
+	Vector<OutputWriter> ows;
+	Vector<String> pathwayNames;
+	
+	OutputWriter selectedOW;
+	
 	public SummaryTableGenerator() {
-
+		ows = new Vector<>();
+		pathwayNames = new Vector<>();
 	}
 
 	private void initMenu() {
@@ -67,8 +73,8 @@ public class SummaryTableGenerator {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				DegreeDistribution pdd = new DegreeDistribution(ow.genes, ow.class1name,
-						ow.class2name);
+				DegreeDistribution pdd = new DegreeDistribution(selectedOW.genes, selectedOW.class1name,
+						selectedOW.class2name);
 				pdd.graphProbabilityDistributions();
 
 			}
@@ -86,13 +92,13 @@ public class SummaryTableGenerator {
 				frame.setSize(500, 400);
 				list.append("Genes betweeness centrality difference (ranked highest to lowest):\n");
 				
-				Vector<EDDYNode> btwSort = ow.genes;
+				Vector<EDDYNode> btwSort = selectedOW.genes;
 				btwSort.sort(new Comparator<EDDYNode>() {
 
 					@Override
 					public int compare(EDDYNode o1, EDDYNode o2) {
-						double diff1 = Math.abs(ow.graphAnalysis.getNodeBtwClass1(o1.name)-ow.graphAnalysis.getNodeBtwClass2(o1.name));
-						double diff2 = Math.abs(ow.graphAnalysis.getNodeBtwClass1(o2.name)-ow.graphAnalysis.getNodeBtwClass2(o2.name));
+						double diff1 = Math.abs(selectedOW.graphAnalysis.getNodeBtwClass1(o1.name)-selectedOW.graphAnalysis.getNodeBtwClass2(o1.name));
+						double diff2 = Math.abs(selectedOW.graphAnalysis.getNodeBtwClass1(o2.name)-selectedOW.graphAnalysis.getNodeBtwClass2(o2.name));
 						if(diff1>diff2){
 							return -1;
 						}else if(diff1<diff2){
@@ -104,7 +110,7 @@ public class SummaryTableGenerator {
 				});
 				
 				for(int i = 0; i<btwSort.size();i++){
-					double diff = Math.abs(ow.graphAnalysis.getNodeBtwClass1(btwSort.get(i).name)-ow.graphAnalysis.getNodeBtwClass2(btwSort.get(i).name));
+					double diff = Math.abs(selectedOW.graphAnalysis.getNodeBtwClass1(btwSort.get(i).name)-selectedOW.graphAnalysis.getNodeBtwClass2(btwSort.get(i).name));
 					list.append(btwSort.get(i).name+":\t"+diff+"\n");
 				}
 				frame.getContentPane().add(new JScrollPane(list));
@@ -146,13 +152,13 @@ public class SummaryTableGenerator {
 				frame.setSize(500, 400);
 				list.append("Genes closeness centrality difference (ranked highest to lowest):\n");
 				
-				Vector<EDDYNode> centSort = ow.genes;
+				Vector<EDDYNode> centSort = selectedOW.genes;
 				centSort.sort(new Comparator<EDDYNode>() {
 
 					@Override
 					public int compare(EDDYNode o1, EDDYNode o2) {
-						double diff1 = Math.abs(ow.graphAnalysis.clClass1.getVertexScore(o1.name)-ow.graphAnalysis.clClass2.getVertexScore(o1.name));
-						double diff2 = Math.abs(ow.graphAnalysis.clClass1.getVertexScore(o2.name)-ow.graphAnalysis.clClass2.getVertexScore(o2.name));
+						double diff1 = Math.abs(selectedOW.graphAnalysis.clClass1.getVertexScore(o1.name)-selectedOW.graphAnalysis.clClass2.getVertexScore(o1.name));
+						double diff2 = Math.abs(selectedOW.graphAnalysis.clClass1.getVertexScore(o2.name)-selectedOW.graphAnalysis.clClass2.getVertexScore(o2.name));
 						if(diff1>diff2){
 							return -1;
 						}else if(diff1<diff2){
@@ -164,7 +170,7 @@ public class SummaryTableGenerator {
 				});
 				
 				for(int i = 0; i<centSort.size();i++){
-					double diff = Math.abs(ow.graphAnalysis.clClass1.getVertexScore(centSort.get(i).name)-ow.graphAnalysis.clClass2.getVertexScore(centSort.get(i).name));
+					double diff = Math.abs(selectedOW.graphAnalysis.clClass1.getVertexScore(centSort.get(i).name)-selectedOW.graphAnalysis.clClass2.getVertexScore(centSort.get(i).name));
 					list.append(centSort.get(i).name+":\t"+diff+"\n");
 				}
 				frame.getContentPane().add(new JScrollPane(list));
@@ -184,17 +190,17 @@ public class SummaryTableGenerator {
 				frame.setSize(500, 400);
 				list.append("Genes cluster coefficient difference (ranked highest to lowest):\n");
 				
-				Vector<EDDYNode> clusterSort = ow.genes;
+				Vector<EDDYNode> clusterSort = selectedOW.genes;
 				clusterSort.sort(new Comparator<EDDYNode>() {
 
 					@Override
 					public int compare(EDDYNode o1, EDDYNode o2) {
-						double diff1 = Math.abs(ow.graphAnalysis.clusteringCoefficients1(o1.name)-ow.graphAnalysis.clusteringCoefficients2(o1.name));
-						double diff2 = Math.abs(ow.graphAnalysis.clusteringCoefficients1(o1.name)-ow.graphAnalysis.clusteringCoefficients2(o1.name));
+						double diff1 = Math.abs(selectedOW.graphAnalysis.clusteringCoefficients1(o1.name)-selectedOW.graphAnalysis.clusteringCoefficients2(o1.name));
+						double diff2 = Math.abs(selectedOW.graphAnalysis.clusteringCoefficients1(o2.name)-selectedOW.graphAnalysis.clusteringCoefficients2(o2.name));
 						if(diff1>diff2){
-							return 1;
-						}else if(diff1<diff2){
 							return -1;
+						}else if(diff1<diff2){
+							return 1;
 						}else{
 							return 0;
 						}
@@ -202,7 +208,7 @@ public class SummaryTableGenerator {
 				});
 				
 				for(int i = 0; i<clusterSort.size();i++){
-					double diff = Math.abs(ow.graphAnalysis.clusteringCoefficients1(ow.genes.get(i).name)-ow.graphAnalysis.clusteringCoefficients2(ow.genes.get(i).name));
+					double diff = Math.abs(selectedOW.graphAnalysis.clusteringCoefficients1(selectedOW.genes.get(i).name)-selectedOW.graphAnalysis.clusteringCoefficients2(selectedOW.genes.get(i).name));
 					list.append(clusterSort.get(i).name+":\t"+diff+"\n");
 				}
 				frame.getContentPane().add(new JScrollPane(list));
@@ -210,11 +216,9 @@ public class SummaryTableGenerator {
 			}
 		});
 	
-		/*analysisPanel.add(vn);
-		analysisPanel.add(dd);
-		analysisPanel.add(bc);
-		analysisPanel.add(cc);
-		analysisPanel.add(clust);*/
+		JMenu pathChooser = new JMenu("Pathways");
+		
+		
 		menu.add(vn);
 		menu.addSeparator();
 		menu.add(dd);
@@ -239,10 +243,12 @@ public class SummaryTableGenerator {
 			String line = reader.readLine();
 
 			String[] inputs = null;
+
 			while (!(line.equals(""))) {
 				inputs = line.split("\t");
-				ow = new OutputWriter(inputs[0] + "_EdgeList.txt", inputs[0] + "_NODEINFO.txt", inputFile,
-						classInfoFile);
+				
+				ows.add(new OutputWriter(inputs[0] + "_EdgeList.txt", inputs[0] + "_NODEINFO.txt", inputFile,
+						classInfoFile));
 				output += "<tr><td>" + inputs[0] + "</td>" + "<td>" + inputs[2] + "</td>" + "<td>"
 						+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[4])) + "</td>" + "<td>"
 						+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[5])) + "</td></tr>";
@@ -315,18 +321,7 @@ public class SummaryTableGenerator {
 				initMenu();
 				summaryFrame.setJMenuBar(menubar);
 				summaryFrame.setVisible(true);
-				/*
-				analysisFrame = new JFrame("EDDY: Evaluation of Differential DependencY");
-				analysisPanel = new JPanel();
-				analysisPanel.setLayout(new GridLayout(5, 1));
-				initAnalysisPanel();
-				analysisFrame.setSize(300, 200);
-				analysisFrame.add(analysisPanel);
-				analysisFrame.setResizable(true);
-				analysisFrame.setLocationRelativeTo(summaryFrame);
-				analysisFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-				//analysisFrame.setVisible(true);
-				*/
+				
 			
 			Platform.runLater(new Runnable() {
 				@Override
