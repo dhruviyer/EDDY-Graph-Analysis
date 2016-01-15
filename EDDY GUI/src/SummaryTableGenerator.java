@@ -5,6 +5,7 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.List;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
@@ -23,6 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -31,14 +33,18 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import com.sun.org.apache.bcel.internal.generic.Select;
 
 import eddy.EasyReader;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.RadioButton;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import jdk.internal.org.objectweb.asm.tree.analysis.Analyzer;
@@ -59,6 +65,7 @@ public class SummaryTableGenerator {
 	Vector<String> pathwayNames;
 	
 	OutputWriter selectedOW;
+	int selectedIndex = 0;
 	
 	public SummaryTableGenerator() {
 		ows = new Vector<>();
@@ -217,7 +224,25 @@ public class SummaryTableGenerator {
 		});
 	
 		JMenu pathChooser = new JMenu("Pathways");
+		ButtonGroup group = new ButtonGroup();
 		
+		JRadioButtonMenuItem[] options = new JRadioButtonMenuItem[pathwayNames.size()];
+		for(int i = 0; i< options.length; i++){
+			options[i] = new JRadioButtonMenuItem(pathwayNames.get(i));
+			group.add(options[i]);
+			
+			options[i].addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					for(int i = 0; i< options.length; i++){
+						if(e.getSource().equals(options[i]))
+							selectedOW = ows.get(i);
+					}
+				}
+			});
+			pathChooser.add(options[i]);
+		}
 		
 		menu.add(vn);
 		menu.addSeparator();
@@ -226,6 +251,7 @@ public class SummaryTableGenerator {
 		menu.add(cc);
 		menu.add(clust);
 		menubar.add(menu);
+		menubar.add(pathChooser);
 		
 		
 	}
@@ -252,6 +278,7 @@ public class SummaryTableGenerator {
 				output += "<tr><td>" + inputs[0] + "</td>" + "<td>" + inputs[2] + "</td>" + "<td>"
 						+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[4])) + "</td>" + "<td>"
 						+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[5])) + "</td></tr>";
+				pathwayNames.add(inputs[0]);
 				line = reader.readLine();
 
 				// start necessary data operations
