@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.Vector;
 
@@ -192,8 +193,9 @@ public class OutputWriter {
 						"html {    width: 100%;    height: 100%;  }  body {     font: 14px helvetica neue, helvetica, arial, sans-serif;    width: 100%;    height: 100%;  }  #cy {    position: absolute;    left: 0;    top: 0;    bottom: 0;    right: 17em;    background: #eee;  }  #config {    position: absolute;    right: 0;    top: 0;    bottom: 0;    width: 17em;    background: #333;    box-sizing: border-box;    padding: 1em;    color: #fff;  }  .param {    margin-bottom: 1em;  }  .preamble {    margin-bottom: 2em;  }  p {    margin: 0.5em 0;    font-size: 0.8em;  }  .param button {    width: 4.5em;    margin-right: 0.25em;  }  a,  a:hover {    color: #62daea;  }  .label {    display: inline-block;  }  .slider {    display: block;  }");
 				csswriter.close();
 
-				PrintWriter linksWriter = new PrintWriter("links.txt", "UTF-8");
+				PrintWriter linksWriter = new PrintWriter(new FileOutputStream(new File("links.txt"), true)); 
 				linksWriter.append(geneSetFile.getAbsolutePath() + "/index.html" + "\n");
+				System.out.println(geneSetFile.getAbsolutePath() + "/index.html" + "\n");
 				linksWriter.close();
 				
 				//iterate through network file and add all the edges
@@ -237,34 +239,34 @@ public class OutputWriter {
 				
 				int temp = 1;
 				//write out node info
-				for(EDDYNode node:genes){
+				for(int i = 0; i<genes.size(); i++){
 					if(temp==1){
-						writer.println("{\"data\":{ \"id\": \"" + node.name
-								+ "\",\"idInt\":0, \"name\":\"" + node.name + "\",\"btwn\":"
-								+ graphAnalysis.getNodeBtwBothClasses(node.name)+ ",\"btwn_"
-								+ class1name + "\":" + graphAnalysis.getNodeBtwClass1(node.name)
+						writer.println("{\"data\":{ \"id\": \"" + genes.get(i).name
+								+ "\",\"idInt\":0, \"name\":\"" + genes.get(i).name + "\",\"btwn\":"
+								+ graphAnalysis.getNodeBtwBothClasses(genes.get(i).name)+ ",\"btwn_"
+								+ class1name + "\":" + graphAnalysis.getNodeBtwClass1(genes.get(i).name)
 								+ ",\"btwn_" + class2name + "\":"
-								+ graphAnalysis.getNodeBtwClass2(node.name)
-								+ ",\"query\":true,\"gene\":true,\"nodeEdgeColor\":\"" + node.nodeEdgeColor
-								+ "\",\"ratio\":" + node.ratio + ",\"exprone_" + class1name + "\":" + node.expr1c1
-								+ ",\"exprzero_" + class1name + "\":" + node.expr0c1 + ",\"exprnegone_"
-								+ class1name + "\":" + node.exprneg1c1 + ",\"exprone_" + class2name + "\":"
-								+ node.expr1c2 + ",\"exprzero_" + class2name + "\":" + node.expr0c2
-								+ ",\"exprnegone_" + class2name + "\":" + node.exprneg1c2
+								+ graphAnalysis.getNodeBtwClass2(genes.get(i).name)
+								+ ",\"query\":true,\"gene\":true,\"nodeEdgeColor\":\"" + genes.get(i).nodeEdgeColor
+								+ "\",\"ratio\":" + genes.get(i).ratio + ",\"exprone_" + class1name + "\":" + genes.get(i).expr1c1
+								+ ",\"exprzero_" + class1name + "\":" + genes.get(i).expr0c1 + ",\"exprnegone_"
+								+ class1name + "\":" + genes.get(i).exprneg1c1 + ",\"exprone_" + class2name + "\":"
+								+ genes.get(i).expr1c2 + ",\"exprzero_" + class2name + "\":" + genes.get(i).expr0c2
+								+ ",\"exprnegone_" + class2name + "\":" + genes.get(i).exprneg1c2
 								+ "},\"position\":{},\"group\":\"nodes\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
 					}else{
-						writer.println(",{\"data\":{ \"id\": \"" + node.name
-								+ "\",\"idInt\":0, \"name\":\"" + node.name + "\",\"btwn\":"
-								+ graphAnalysis.getNodeBtwBothClasses(node.name) + ",\"btwn_"
-								+ class1name + "\":" + graphAnalysis.getNodeBtwClass1(node.name)
+						writer.println(",{\"data\":{ \"id\": \"" + genes.get(i).name
+								+ "\",\"idInt\":0, \"name\":\"" + genes.get(i).name + "\",\"btwn\":"
+								+ graphAnalysis.getNodeBtwBothClasses(genes.get(i).name) + ",\"btwn_"
+								+ class1name + "\":" + graphAnalysis.getNodeBtwClass1(genes.get(i).name)
 								+ ",\"btwn_" + class2name + "\":"
-								+ graphAnalysis.getNodeBtwClass1(node.name)
-								+ ",\"query\":true,\"gene\":true,\"nodeEdgeColor\":\"" + node.nodeEdgeColor
-								+ "\",\"ratio\":" + node.ratio + ",\"exprone_" + class1name + "\":" + node.expr1c1
-								+ ",\"exprzero_" + class1name + "\":" + node.expr0c1 + ",\"exprnegone_"
-								+ class1name + "\":" + node.exprneg1c1 + ",\"exprone_" + class2name + "\":"
-								+ node.expr1c2 + ",\"exprzero_" + class2name + "\":" + node.expr0c2
-								+ ",\"exprnegone_" + class2name + "\":" + node.exprneg1c2
+								+ graphAnalysis.getNodeBtwClass2(genes.get(i).name)
+								+ ",\"query\":true,\"gene\":true,\"nodeEdgeColor\":\"" + genes.get(i).nodeEdgeColor
+								+ "\",\"ratio\":" + genes.get(i).ratio + ",\"exprone_" + class1name + "\":" + genes.get(i).expr1c1
+								+ ",\"exprzero_" + class1name + "\":" + genes.get(i).expr0c1 + ",\"exprnegone_"
+								+ class1name + "\":" + genes.get(i).exprneg1c1 + ",\"exprone_" + class2name + "\":"
+								+ genes.get(i).expr1c2 + ",\"exprzero_" + class2name + "\":" + genes.get(i).expr0c2
+								+ ",\"exprnegone_" + class2name + "\":" + genes.get(i).exprneg1c2
 								+ "},\"position\":{},\"group\":\"nodes\",\"removed\":false,\"selected\":false,\"selectable\":true,\"locked\":false,\"grabbed\":false,\"grabbable\":true,\"classes\":\"\"}");
 					}
 					temp++;

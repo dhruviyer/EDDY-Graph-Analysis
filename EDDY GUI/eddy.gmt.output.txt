@@ -1,14 +1,13 @@
 EDDY OUTPUT FILE
-Data File: /Users/diyer/Desktop/EDDY 12/TCGA_GBM_mRNA_discrete_HGNC.txt
+Data File: /Users/diyer/Desktop/TCGA_GBM_mRNA_discrete_HGNC.txt
 Target Gene Set(s) File: c2.cp.v4.0.symbols.gmt.myfile.txt
-Class Label File: /Users/diyer/Desktop/EDDY 12/Proneural.txt
-Number of Gene Sets: 2
+Class Label File: /Users/diyer/Desktop/Proneural.txt
+Number of Gene Sets: 1
 Number of Threads: 2
 
--c /Users/diyer/Desktop/EDDY 12/Proneural.txt -d /Users/diyer/Desktop/EDDY 12/TCGA_GBM_mRNA_discrete_HGNC.txt -g c2.cp.v4.0.symbols.gmt.myfile.txt -edf true -m -1 -M -1 -mp 3 -p 1 -qp false -s -1 -r 2 -rs 0.8 -pd false -in false -ap true -pw 0.0
+-c /Users/diyer/Desktop/Proneural.txt -d /Users/diyer/Desktop/TCGA_GBM_mRNA_discrete_HGNC.txt -g c2.cp.v4.0.symbols.gmt.myfile.txt -edf true -m -1 -M -1 -mp 3 -p 1 -qp false -s -1 -r 2 -rs 0.8 -pd false -in false -ap true -pw 0.0
 
 Name: 	Collection: 	Size: 	URL: 	JS Divergence: 	P-Value: 	#Permutations: 	Genes: 
-BIOCARTA_AKT_PATHWAY	c2.cp.v4.0.symbols.gmt.myfile.txt	22	http://www.broadinstitute.org/gsea/msigdb/cards/BIOCARTA_AKT_PATHWAY	0.3089052745027137	0.542348119756959	2.0	CASP9	IKBKG	FOXO4	CHUK	FOXO1	FOXO3	RELA	PDPK1	GHR	IKBKB	AKT1	PIK3CA	GH1	PPP2CA	FASLG	HSP90AA1	YWHAH	BAD	NFKB1	PIK3CG	PIK3R1	NFKBIA
-BIOCARTA_41BB_PATHWAY	c2.cp.v4.0.symbols.gmt.myfile.txt	17	http://www.broadinstitute.org/gsea/msigdb/cards/BIOCARTA_41BB_PATHWAY	0.37528730662476345	0.42166265432852035	2.0	JUN	MAP3K5	MAPK8	CHUK	MAPK14	MAP3K1	RELA	TNFRSF9	IKBKB	MAP4K5	IFNG	TRAF2	ATF2	IL4	NFKB1	NFKBIA	IL2
+BIOCARTA_NEUROTRANSMITTERS_PATHWAY	c2.cp.v4.0.symbols.gmt.myfile.txt	6	http://www.broadinstitute.org/gsea/msigdb/cards/BIOCARTA_NEUROTRANSMITTERS_PATHWAY	0.39795528121282014	2.0239509723740667E-7	2.0	GAD1	TH	HDC	DBH	PNMT	TPH1
 
-Elapsed Time:   00 hrs: 01 min: 23 sec
+Elapsed Time:   00 hrs: 00 min: 58 sec

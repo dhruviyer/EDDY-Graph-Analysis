@@ -241,6 +241,10 @@ public class SummaryTableGenerator {
 					}
 				}
 			});
+			if(i == 0){ 
+				options[i].setSelected(true);
+				selectedOW = ows.get(i);
+			}
 			pathChooser.add(options[i]);
 		}
 		
@@ -363,7 +367,7 @@ public class SummaryTableGenerator {
 	}
 
 	public void makeTable(String edgeList, String nodeinfo, String inputFile, String classInfoFile) {
-		ow = new OutputWriter(edgeList, nodeinfo, inputFile, classInfoFile);
+		//ow = new OutputWriter(edgeList, nodeinfo, inputFile, classInfoFile);
 
 		try {
 			JOptionPane.showMessageDialog(null,
@@ -385,7 +389,9 @@ public class SummaryTableGenerator {
 				String[] inputs = null;
 
 				inputs = line.split("\t");
-
+				pathwayNames.add(inputs[0]);
+				ows.add(new OutputWriter(edgeList, nodeinfo, inputFile,
+						classInfoFile));
 				output += "<tr><td>" + inputs[0] + "</td>" + "<td>" + inputs[2] + "</td>" + "<td>"
 						+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[4])) + "</td>" + "<td>"
 						+ new DecimalFormat("#0.00000").format(Float.parseFloat(inputs[5])) + "</td></tr>";
