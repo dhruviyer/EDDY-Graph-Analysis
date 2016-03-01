@@ -87,7 +87,7 @@ public class DegreeDistribution {
 
 	}
 
-	public void graphProbabilityDistributions() {
+	public void graphProbabilityDistributions(double dia1, double dia2) {
 		
 		JFreeChart chartA = ChartFactory.createBarChart("Probability Degree Distributions", "Degree (k)", "Probability (Pk)", c1ds);
 		chartA.getCategoryPlot().getRangeAxis().setRange(new Range(0,1));
@@ -98,6 +98,9 @@ public class DegreeDistribution {
 		frame.add(new JScrollPane(new ChartPanel(chartA)));
 		frame.add(new JLabel("KS Test: p= "+ksTestP()));
 		frame.add(new JLabel("KS Statistic: D= "+ksStat()));
+		frame.add(new JLabel(class1name.toUpperCase()+" diameter = "+dia1));
+		frame.add(new JLabel(class2name.toUpperCase()+" diameter = "+dia2));
+		frame.add(new JLabel("Diametric difference = "+Math.abs(dia1-dia2)));
 		frame.pack();
 		frame.setSize(750, 500);
 		frame.setVisible(true);

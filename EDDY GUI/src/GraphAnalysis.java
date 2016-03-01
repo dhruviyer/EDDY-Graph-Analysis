@@ -2,12 +2,15 @@
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.collections15.Transformer;
 import org.apache.commons.math3.stat.inference.KolmogorovSmirnovTest;
 
 import com.sun.javafx.font.Metrics;
 
 import edu.uci.ics.jung.algorithms.importance.BetweennessCentrality;
 import edu.uci.ics.jung.algorithms.scoring.ClosenessCentrality;
+import edu.uci.ics.jung.algorithms.scoring.EigenvectorCentrality;
+import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 
@@ -26,6 +29,12 @@ public class GraphAnalysis {
 	ClosenessCentrality<String, String> clClass2;
 	ClosenessCentrality<String, String> clBothClasses;
 	
+	EigenvectorCentrality<String, String> eClass1;
+	EigenvectorCentrality<String, String> eClass2;
+	EigenvectorCentrality<String, String> eBothClasses;
+	
+	DistanceStatistics ds;
+	
 	public GraphAnalysis(Vector<EDDYNode> genes) {
 		this.genes = genes;
 		
@@ -38,6 +47,8 @@ public class GraphAnalysis {
 			gClass2.addVertex(genes.get(i).name);
 			gBothClasses.addVertex(genes.get(i).name);	
 		}
+		
+		ds = new DistanceStatistics();
 	}
 	
 	public void addEdge(String source, String target, int graphClass){
@@ -71,6 +82,16 @@ public class GraphAnalysis {
 		btwBothClasses.evaluate();			
 	}
 	
+	public void eigenvectorCentrality(){
+		eClass1 = new EigenvectorCentrality<>(gClass1);
+		eClass2 = new EigenvectorCentrality<>(gClass2);
+		eBothClasses = new EigenvectorCentrality<>(gBothClasses);
+		
+		eClass1.evaluate();
+		eClass2.evaluate();
+		eBothClasses.evaluate();
+	}
+	
 	public double clusteringCoefficients1(String vertexName){
 		edu.uci.ics.jung.algorithms.metrics.Metrics metric = new edu.uci.ics.jung.algorithms.metrics.Metrics();
 		Map<String, Double> map1 = metric.clusteringCoefficients(gClass1);
@@ -99,5 +120,37 @@ public class GraphAnalysis {
 	
 	public double getNodeBtwBothClasses(String vertexName){
 		return btwBothClasses.getVertexRankScore(vertexName);
+	}
+	
+	public double getNodeEClass1(String vertexName){
+		return eClass1.getVertexScore(vertexName);
+	}
+	
+	public double getNodeEClass2(String vertexName){
+		return eClass2.getVertexScore(vertexName);
+	}
+	
+	public double getNodeEBothClasses(String vertexName){
+		return eBothClasses.getVertexScore(vertexName);
+	}
+	
+	public double diameterClass1(){
+		return ds.diameter(gClass1);
+	}
+	
+	public double diameterClass2(){
+		return ds.diameter(gClass2);
+	}
+	
+	public double diameterBothClasses(){
+		return ds.diameter(gBothClasses);
+	}
+	
+	public double getAveDegreeClass1(String vertexName){
+		return ds.averageDistances(gClass1).transform(vertexName);
+	}
+	
+	public double getAveDegreeClass2(String vertexName){
+		return ds.averageDistances(gClass2).transform(vertexName);
 	}
 }

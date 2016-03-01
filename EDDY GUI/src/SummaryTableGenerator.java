@@ -1,14 +1,4 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
 import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
-import java.awt.List;
-import java.awt.Menu;
-import java.awt.MenuBar;
-import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -17,15 +7,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -35,19 +25,20 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
-import com.sun.org.apache.bcel.internal.generic.Select;
+import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import eddy.EasyReader;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.RadioButton;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import jdk.internal.org.objectweb.asm.tree.analysis.Analyzer;
 
 public class SummaryTableGenerator {
 	JFrame summaryFrame;
@@ -66,10 +57,13 @@ public class SummaryTableGenerator {
 	
 	OutputWriter selectedOW;
 	int selectedIndex = 0;
+	DecimalFormat df;
 	
 	public SummaryTableGenerator() {
 		ows = new Vector<>();
 		pathwayNames = new Vector<>();
+		df = new DecimalFormat("#.###");
+		df.setRoundingMode(RoundingMode.CEILING);
 	}
 
 	private void initMenu() {
@@ -82,22 +76,18 @@ public class SummaryTableGenerator {
 				// TODO Auto-generated method stub
 				DegreeDistribution pdd = new DegreeDistribution(selectedOW.genes, selectedOW.class1name,
 						selectedOW.class2name);
-				pdd.graphProbabilityDistributions();
-
+				pdd.graphProbabilityDistributions(selectedOW.graphAnalysis.diameterClass1(), selectedOW.graphAnalysis.diameterClass2());
 			}
 		});
 
-		JMenuItem bc = new JMenuItem("Betweeness Centrality Difference Charts");
+		JMenuItem bc = new JMenuItem("Betweeness Centrality");
 		
 		bc.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFrame frame = new JFrame();
-				JTextArea list = new JTextArea();
-				list.setEditable(false);
 				frame.setSize(500, 400);
-				list.append("Genes betweeness centrality difference (ranked highest to lowest):\n");
 				
 				Vector<EDDYNode> btwSort = selectedOW.genes;
 				btwSort.sort(new Comparator<EDDYNode>() {
@@ -115,12 +105,75 @@ public class SummaryTableGenerator {
 						}
 					}
 				});
-				
-				for(int i = 0; i<btwSort.size();i++){
-					double diff = Math.abs(selectedOW.graphAnalysis.getNodeBtwClass1(btwSort.get(i).name)-selectedOW.graphAnalysis.getNodeBtwClass2(btwSort.get(i).name));
-					list.append(btwSort.get(i).name+":\t"+diff+"\n");
+				String[] columnNames = {"Name", selectedOW.class1name.toUpperCase(),selectedOW.class2name.toUpperCase(), "Difference"};
+				String[][] rowData = new String[btwSort.size()][4];
+				for(int row = 0; row<rowData.length;row++){
+					double diff = Math.abs(selectedOW.graphAnalysis.getNodeBtwClass1(btwSort.get(row).name)-selectedOW.graphAnalysis.getNodeBtwClass2(btwSort.get(row).name));
+					rowData[row][0] = btwSort.get(row).name;
+					rowData[row][1] = ""+df.format(selectedOW.graphAnalysis.getNodeBtwClass1(btwSort.get(row).name));
+					rowData[row][2] = ""+df.format(selectedOW.graphAnalysis.getNodeBtwClass2(btwSort.get(row).name));
+					rowData[row][3] = ""+df.format(diff);
 				}
-				frame.getContentPane().add(new JScrollPane(list));
+				JTable table = new JTable(new DefaultTableModel(rowData, columnNames){
+					@Override
+						public boolean isCellEditable(int row, int column){
+							return false;
+						}
+					});
+				
+				table.setAutoCreateRowSorter(true);
+
+				frame.setTitle("Betweeness Centrality");
+				frame.getContentPane().add(new JScrollPane(table));
+				frame.setVisible(true);
+			}
+		});
+		
+		JMenuItem dist = new JMenuItem("Average Distance");
+		
+		dist.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame frame = new JFrame();
+				frame.setSize(500, 400);
+				
+				Vector<EDDYNode> distSort = selectedOW.genes;
+				distSort.sort(new Comparator<EDDYNode>() {
+
+					@Override
+					public int compare(EDDYNode o1, EDDYNode o2) {
+						double diff1 = Math.abs(selectedOW.graphAnalysis.getAveDegreeClass1(o1.name)-selectedOW.graphAnalysis.getAveDegreeClass2(o1.name));
+						double diff2 = Math.abs(selectedOW.graphAnalysis.getAveDegreeClass1(o2.name)-selectedOW.graphAnalysis.getAveDegreeClass2(o2.name));
+						if(diff1>diff2){
+							return -1;
+						}else if(diff1<diff2){
+							return 1;
+						}else{
+							return 0;
+						}
+					}
+				});
+				String[] columnNames = {"Name", selectedOW.class1name.toUpperCase(),selectedOW.class2name.toUpperCase(), "Difference"};
+				String[][] rowData = new String[distSort.size()][4];
+				for(int row = 0; row<rowData.length;row++){
+					double diff = Math.abs(selectedOW.graphAnalysis.getAveDegreeClass1(distSort.get(row).name)-selectedOW.graphAnalysis.getAveDegreeClass2(distSort.get(row).name));
+					rowData[row][0] = distSort.get(row).name;
+					rowData[row][1] = ""+df.format(selectedOW.graphAnalysis.getNodeBtwClass1(distSort.get(row).name));
+					rowData[row][2] = ""+df.format(selectedOW.graphAnalysis.getNodeBtwClass2(distSort.get(row).name));
+					rowData[row][3] = ""+df.format(diff);
+				}
+				JTable table = new JTable(new DefaultTableModel(rowData, columnNames){
+					@Override
+						public boolean isCellEditable(int row, int column){
+							return false;
+						}
+					});
+				
+				table.setAutoCreateRowSorter(true);
+
+				frame.setTitle("Average Node Distances");
+				frame.getContentPane().add(new JScrollPane(table));
 				frame.setVisible(true);
 			}
 		});
@@ -147,17 +200,14 @@ public class SummaryTableGenerator {
 			}
 		});
 
-		JMenuItem cc = new JMenuItem("Closeness Centrality Difference Charts");
+		JMenuItem cc = new JMenuItem("Closeness Centrality");
 		
 		cc.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFrame frame = new JFrame();
-				JTextArea list = new JTextArea();
-				list.setEditable(false);
 				frame.setSize(500, 400);
-				list.append("Genes closeness centrality difference (ranked highest to lowest):\n");
 				
 				Vector<EDDYNode> centSort = selectedOW.genes;
 				centSort.sort(new Comparator<EDDYNode>() {
@@ -176,27 +226,38 @@ public class SummaryTableGenerator {
 					}
 				});
 				
-				for(int i = 0; i<centSort.size();i++){
-					double diff = Math.abs(selectedOW.graphAnalysis.clClass1.getVertexScore(centSort.get(i).name)-selectedOW.graphAnalysis.clClass2.getVertexScore(centSort.get(i).name));
-					list.append(centSort.get(i).name+":\t"+diff+"\n");
+				String[] columnNames = {"Name", selectedOW.class1name.toUpperCase(),selectedOW.class2name.toUpperCase(), "Difference"};
+				String[][] rowData = new String[centSort.size()][4];
+				for(int row = 0; row<rowData.length;row++){
+					double diff = Math.abs(selectedOW.graphAnalysis.clClass1.getVertexScore(centSort.get(row).name)-selectedOW.graphAnalysis.clClass2.getVertexScore(centSort.get(row).name));
+					rowData[row][0] = centSort.get(row).name;
+					rowData[row][1] = ""+df.format(selectedOW.graphAnalysis.clClass1.getVertexScore(centSort.get(row).name));
+					rowData[row][2] = ""+df.format(selectedOW.graphAnalysis.clClass2.getVertexScore(centSort.get(row).name));
+					rowData[row][3] = ""+df.format(diff);
 				}
-				frame.getContentPane().add(new JScrollPane(list));
+				JTable table = new JTable(new DefaultTableModel(rowData, columnNames){
+					@Override
+						public boolean isCellEditable(int row, int column){
+							return false;
+						}
+					});
+				table.setAutoCreateRowSorter(true);
+
+				frame.setTitle("Closeness Centrality");
+				frame.getContentPane().add(new JScrollPane(table));
 				frame.setVisible(true);
 			}
 		});
 		
-		JMenuItem clust = new JMenuItem("Clustering Difference Charts");
+		JMenuItem clust = new JMenuItem("Clustering");
 		
 		clust.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFrame frame = new JFrame();
-				JTextArea list = new JTextArea();
-				list.setEditable(false);
 				frame.setSize(500, 400);
-				list.append("Genes cluster coefficient difference (ranked highest to lowest):\n");
-				
+			
 				Vector<EDDYNode> clusterSort = selectedOW.genes;
 				clusterSort.sort(new Comparator<EDDYNode>() {
 
@@ -214,15 +275,76 @@ public class SummaryTableGenerator {
 					}
 				});
 				
-				for(int i = 0; i<clusterSort.size();i++){
-					double diff = Math.abs(selectedOW.graphAnalysis.clusteringCoefficients1(selectedOW.genes.get(i).name)-selectedOW.graphAnalysis.clusteringCoefficients2(selectedOW.genes.get(i).name));
-					list.append(clusterSort.get(i).name+":\t"+diff+"\n");
+				String[] columnNames = {"Name", selectedOW.class1name.toUpperCase(),selectedOW.class2name.toUpperCase(), "Difference"};
+				String[][] rowData = new String[clusterSort.size()][4];
+				for(int row = 0; row<rowData.length;row++){
+					double diff = Math.abs(selectedOW.graphAnalysis.clusteringCoefficients1(clusterSort.get(row).name)-selectedOW.graphAnalysis.clusteringCoefficients2(clusterSort.get(row).name));
+					rowData[row][0] = clusterSort.get(row).name;
+					rowData[row][1] = ""+df.format(selectedOW.graphAnalysis.clusteringCoefficients1(clusterSort.get(row).name));
+					rowData[row][2] = ""+df.format(selectedOW.graphAnalysis.clusteringCoefficients2(clusterSort.get(row).name));
+					rowData[row][3] = ""+df.format(diff);
 				}
-				frame.getContentPane().add(new JScrollPane(list));
+				JTable table = new JTable(new DefaultTableModel(rowData, columnNames){
+					@Override
+						public boolean isCellEditable(int row, int column){
+							return false;
+						}
+					});
+				table.setAutoCreateRowSorter(true);
+
+				frame.setTitle("Clustering");
+				frame.getContentPane().add(new JScrollPane(table));
 				frame.setVisible(true);
 			}
 		});
 	
+		JMenuItem eigen = new JMenuItem("Eigenvector Centrality");
+		
+		eigen.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JFrame frame = new JFrame();
+				frame.setSize(500, 400);
+				
+				Vector<EDDYNode> eSort = selectedOW.genes;
+				eSort.sort(new Comparator<EDDYNode>() {
+
+					@Override
+					public int compare(EDDYNode o1, EDDYNode o2) {
+						double diff1 = Math.abs(selectedOW.graphAnalysis.getNodeEClass1(o1.name)-selectedOW.graphAnalysis.getNodeEClass2(o1.name));
+						double diff2 = Math.abs(selectedOW.graphAnalysis.getNodeEClass1(o2.name)-selectedOW.graphAnalysis.getNodeEClass2(o2.name));
+						if(diff1>diff2){
+							return -1;
+						}else if(diff1<diff2){
+							return 1;
+						}else{
+							return 0;
+						}
+					}
+				});
+				
+				String[] columnNames = {"Name", selectedOW.class1name.toUpperCase(),selectedOW.class2name.toUpperCase(), "Difference"};
+				String[][] rowData = new String[eSort.size()][4];
+				for(int row = 0; row<rowData.length;row++){
+					double diff = Math.abs(selectedOW.graphAnalysis.getNodeEClass1(eSort.get(row).name)-selectedOW.graphAnalysis.getNodeEClass2(eSort.get(row).name));
+					rowData[row][0] = eSort.get(row).name;
+					rowData[row][1] = ""+df.format(selectedOW.graphAnalysis.getNodeEClass1(eSort.get(row).name));
+					rowData[row][2] = ""+df.format(selectedOW.graphAnalysis.getNodeEClass2(eSort.get(row).name));
+					rowData[row][3] = ""+df.format(diff);
+				}
+				JTable table = new JTable(new DefaultTableModel(rowData, columnNames){
+				@Override
+					public boolean isCellEditable(int row, int column){
+						return false;
+					}
+				});
+				table.setAutoCreateRowSorter(true);
+
+				frame.setTitle("Eigenvector Centrality");
+				frame.getContentPane().add(new JScrollPane(table));
+				frame.setVisible(true);
+			}
+		});
+		
 		JMenu pathChooser = new JMenu("Pathways");
 		ButtonGroup group = new ButtonGroup();
 		
@@ -251,9 +373,13 @@ public class SummaryTableGenerator {
 		menu.add(vn);
 		menu.addSeparator();
 		menu.add(dd);
+		menu.addSeparator();
+		menu.add(clust);
+		menu.add(dist);
 		menu.add(bc);
 		menu.add(cc);
-		menu.add(clust);
+		menu.add(eigen);
+		
 		menubar.add(menu);
 		menubar.add(pathChooser);
 		

@@ -236,6 +236,7 @@ public class OutputWriter {
 				}
 				graphAnalysis.betweenessCentrality();
 				graphAnalysis.closnessCentrality();
+				graphAnalysis.eigenvectorCentrality();
 				
 				int temp = 1;
 				//write out node info
