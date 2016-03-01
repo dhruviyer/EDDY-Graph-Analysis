@@ -1,3 +1,0 @@
-unzip eddy_trueedgedir.jar
-jar -cmf manifest.txt neweddy.jar *
-# The trick is to unzip eddy jar and all dependencies that are jars and then regroup into one fat jar.
